@@ -1,0 +1,163 @@
+/* Reset & base */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: #f5f7fb;
+  color: #1a2030;
+  line-height: 1.5;
+}
+
+/* App container */
+.app {
+  max-width: 640px;
+  margin: 3rem auto;
+  padding: 0 1.5rem;
+}
+
+.app h1 {
+  font-size: 1.75rem;
+  margin: 0 0 1rem 0;
+  text-align: center;
+}
+
+/* Form / input row */
+.todo-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.todo-form input {
+  flex: 1;
+  padding: 0.6rem 0.85rem;
+  font-size: 1rem;
+  border: 1px solid #cbd2d9;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.todo-form input:focus {
+  border-color: #4f8bff;
+}
+
+.todo-form input:disabled,
+.todo-form button:disabled {
+  /* disabled styling lives on the button */
+}
+
+/* Add button */
+#add-btn {
+  padding: 0.6rem 1.1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  background: #4f8bff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+#add-btn:hover:not(:disabled) {
+  background: #3a7ae0;
+}
+
+#add-btn:disabled {
+  background: #9fb0d0;
+  cursor: not-allowed;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* Todo list */
+.todo-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.85rem;
+  background: #fff;
+  border: 1px solid #e2e5ea;
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
+}
+
+.todo-item:hover {
+  background: #f9fbfd;
+}
+
+/* Completed state: strikethrough */
+.todo-item.completed .todo-text {
+  text-decoration: line-through;
+  color: #7a8290;
+}
+
+/* Checkbox styling */
+.todo-checkbox {
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+}
+
+/* Todo text */
+.todo-text {
+  flex: 1;
+  word-break: break-word;
+}
+
+/* Delete button */
+.delete-btn {
+  padding: 0.35rem 0.7rem;
+  font-size: 0.9rem;
+  color: #fff;
+  background: #e6463a;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.delete-btn:hover {
+  background: #d1362b;
+}
+
+/* Visibility helpers */
+.hidden {
+  display: none !important;
+}
+
+/* Responsive */
+@media (max-width: 560px) {
+  .todo-form {
+    flex-wrap: wrap;
+  }
+
+  #add-btn {
+    width: 100%;
+  }
+}
