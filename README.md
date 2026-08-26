@@ -92,7 +92,7 @@ The project ships with a self-contained test suite using a minimal, dependency-f
 node tests/app.test.js
 ```
 
-This runs **72 tests** covering:
+This runs **98 tests** covering:
 
 - `hasValidInput` — input validation (6 tests)
 - `createTodo` — todo creation & ID generation (3 tests)
@@ -120,7 +120,7 @@ todo-app/
 ├── style.css               # All styling + responsive layout
 ├── app.js                  # Core logic (pure functions + DOM + persistence)
 ├── tests/
-│   └── app.test.js         # Dependency-free unit test suite (72 tests)
+│   └── app.test.js         # Dependency-free unit test suite (98 tests)
 ├── discussion/
 │   ├── product-requirements.md
 │   ├── architecture.md

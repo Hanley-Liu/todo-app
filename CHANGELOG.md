@@ -40,3 +40,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Security review document
 - Architecture and product requirements documents
 - Marketing launch posts (Reddit, Hacker News, Twitter, Juejin)
+
+### Fixed
+- Test count inconsistency across documentation: README.md body text and project tree said "72 tests" while the badge and actual test suite reported 98; README.zh-CN.md badge said "72 passing" while body text said "72"; CONTRIBUTING.md said "72 tests" — all references now consistently state 98 tests
