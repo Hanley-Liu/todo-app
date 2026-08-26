@@ -382,7 +382,16 @@
       var len = editInput.value.length;
       editInput.setSelectionRange(len, len);
 
+      var isFinished = false;
+
       var finishEdit = function (save) {
+        // Guard against double-fire: keydown (Enter/Escape) triggers
+        // finishEdit, then blur fires finishEdit(true) again. Without
+        // this guard, the second call throws a DOM error because
+        // editInput has already been replaced by textSpan.
+        if (isFinished) return;
+        isFinished = true;
+
         li.classList.remove('editing');
 
         // Restore the text span

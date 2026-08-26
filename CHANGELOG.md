@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated README.md and README.zh-CN.md with filter and clear-completed usage docs
 
 ### Fixed
+- Inline editing double-fire bug: pressing Escape (or Enter) during edit triggered `finishEdit` from both the `keydown` and subsequent `blur` event, causing a DOM `NotFoundError` because `editInput` had already been replaced by `textSpan` — added an `isFinished` guard flag to ensure `finishEdit` runs exactly once per edit session
 - Test suite crashed on load: mock `document` was missing `getElementById` and `readyState`, causing `init()` to throw `TypeError` before any tests could run
 - Mock DOM element `className` setter did not sync into `classList` array, so `classList.contains('completed')` always returned false
 - Mock list `appendChild` did not transfer children from `DocumentFragment`, so rendered list length was 1 instead of the expected count
