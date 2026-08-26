@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Updated README.md and README.zh-CN.md with filter and clear-completed usage docs
+- Updated test count badge in README.md from 72 to 98 passing
+
+### UX
+- Context-aware empty state: shows "No todos yet" when the list is truly empty, vs "No matching todos" when the current filter hides all items (prevents user confusion when filtering)
+- "Clear completed" button now auto-hides when there are no completed todos, reducing visual clutter
 
 ### Fixed
 - Inline editing double-fire bug: pressing Escape (or Enter) during edit triggered `finishEdit` from both the `keydown` and subsequent `blur` event, causing a DOM `NotFoundError` because `editInput` had already been replaced by `textSpan` — added an `isFinished` guard flag to ensure `finishEdit` runs exactly once per edit session

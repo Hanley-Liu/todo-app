@@ -298,7 +298,9 @@
 
   /**
    * Re-renders the todo list from the current state.
-   * Shows the empty-state message when the list is empty.
+   * Shows a context-aware empty-state message:
+   *   - "No todos yet" when the full list is empty
+   *   - "No matching todos" when the list has items but none match the filter
    * Uses textContent exclusively — no innerHTML.
    * @param {Todo[]} todos — The full state (unfiltered)
    * @param {string} filter — 'all' | 'active' | 'completed'
@@ -315,6 +317,13 @@
 
     if (visibleTodos.length === 0) {
       emptyStateElement.classList.remove('hidden');
+      // Context-aware message: distinguish "no todos at all" from
+      // "no todos match the current filter"
+      if (todos.length === 0) {
+        emptyStateElement.textContent = 'No todos yet';
+      } else {
+        emptyStateElement.textContent = 'No matching todos';
+      }
     } else {
       emptyStateElement.classList.add('hidden');
 
@@ -334,6 +343,17 @@
    */
   function updateAddButton(input, addBtn) {
     addBtn.disabled = !hasValidInput(input.value);
+  }
+
+  /**
+   * Shows or hides the "Clear completed" button based on whether any
+   * todos are completed. Hides the button when there is nothing to clear.
+   * @param {Todo[]} todos — The full state
+   * @param {HTMLButtonElement} clearBtn
+   */
+  function updateClearCompletedButton(todos, clearBtn) {
+    var hasCompleted = todos.some(function (t) { return t.completed; });
+    clearBtn.classList.toggle('hidden', !hasCompleted);
   }
 
   // ---------------------------------------------------------------------------
@@ -403,6 +423,7 @@
             todos = editTodo(todos, id, trimmed);
             saveToLocalStorage(todos);
             render(todos, currentFilter, list, emptyState);
+            updateClearCompletedButton(todos, clearCompletedBtn);
           }
         }
 
@@ -528,6 +549,7 @@
       createTodoElement: createTodoElement,
       render: render,
       updateAddButton: updateAddButton,
+      updateClearCompletedButton: updateClearCompletedButton,
     };
   }
 })();

@@ -298,6 +298,28 @@
     };
   }
 
+  function createMockButtonWithClass() {
+    return {
+      disabled: false,
+      classList: {
+        _hidden: false,
+        contains: function (cls) {
+          if (cls === 'hidden') return this._hidden;
+          return false;
+        },
+        add: function (cls) {
+          if (cls === 'hidden') this._hidden = true;
+        },
+        remove: function (cls) {
+          if (cls === 'hidden') this._hidden = false;
+        },
+        toggle: function (cls, force) {
+          if (cls === 'hidden') this._hidden = force;
+        },
+      },
+    };
+  }
+
   // -------------------------------------------------------------------------
   // Tests
   // -------------------------------------------------------------------------
@@ -1096,6 +1118,79 @@
     var btn = createMockButton();
     app.updateAddButton(input, btn);
     assertFalse(btn.disabled, 'button enabled for trimmed input');
+  });
+
+  // --- updateClearCompletedButton ---
+  suite('updateClearCompletedButton');
+
+  test('hides clear-completed button when no todos are completed', function () {
+    var todos = [app.createTodo('Task 1'), app.createTodo('Task 2')];
+    var btn = createMockButtonWithClass();
+    app.updateClearCompletedButton(todos, btn);
+    assertTrue(btn.classList.contains('hidden'), 'button hidden when no completed todos');
+  });
+
+  test('shows clear-completed button when some todos are completed', function () {
+    var todos = [app.createTodo('Task 1'), app.createTodo('Task 2')];
+    todos[1].completed = true;
+    var btn = createMockButtonWithClass();
+    app.updateClearCompletedButton(todos, btn);
+    assertFalse(btn.classList.contains('hidden'), 'button visible when completed todos exist');
+  });
+
+  test('shows clear-completed button when all todos are completed', function () {
+    var todos = [app.createTodo('Task 1'), app.createTodo('Task 2')];
+    todos[0].completed = true;
+    todos[1].completed = true;
+    var btn = createMockButtonWithClass();
+    app.updateClearCompletedButton(todos, btn);
+    assertFalse(btn.classList.contains('hidden'), 'button visible when all completed');
+  });
+
+  test('hides clear-completed button when todo list is empty', function () {
+    var todos = [];
+    var btn = createMockButtonWithClass();
+    app.updateClearCompletedButton(todos, btn);
+    assertTrue(btn.classList.contains('hidden'), 'button hidden when no todos at all');
+  });
+
+  // --- Context-aware empty state ---
+  suite('render (empty state)');
+
+  test('shows "No todos yet" when list is empty and filter is all', function () {
+    var list = createMockList();
+    var emptyState = createMockEmptyState();
+    app.render([], 'all', list, emptyState);
+    assertFalse(emptyState.classList.contains('hidden'), 'empty state visible');
+    assertEqual(emptyState.textContent, 'No todos yet', 'message is "No todos yet"');
+  });
+
+  test('shows "No matching todos" when filter hides all items', function () {
+    var todos = [app.createTodo('Task 1'), app.createTodo('Task 2')];
+    todos[0].completed = true;
+    todos[1].completed = true;
+    var list = createMockList();
+    var emptyState = createMockEmptyState();
+    app.render(todos, 'active', list, emptyState);
+    assertFalse(emptyState.classList.contains('hidden'), 'empty state visible');
+    assertEqual(emptyState.textContent, 'No matching todos', 'message is "No matching todos"');
+  });
+
+  test('shows "No matching todos" when completed filter has no matches', function () {
+    var todos = [app.createTodo('Task 1'), app.createTodo('Task 2')];
+    var list = createMockList();
+    var emptyState = createMockEmptyState();
+    app.render(todos, 'completed', list, emptyState);
+    assertFalse(emptyState.classList.contains('hidden'), 'empty state visible');
+    assertEqual(emptyState.textContent, 'No matching todos', 'message is "No matching todos"');
+  });
+
+  test('hides empty state when todos are visible', function () {
+    var todos = [app.createTodo('Task 1')];
+    var list = createMockList();
+    var emptyState = createMockEmptyState();
+    app.render(todos, 'all', list, emptyState);
+    assertTrue(emptyState.classList.contains('hidden'), 'empty state hidden when todos visible');
   });
 
   // -------------------------------------------------------------------------
