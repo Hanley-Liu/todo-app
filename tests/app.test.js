@@ -565,6 +565,14 @@
     assertEqual(result.length, 0, 'empty array');
   });
 
+  test('creates a new object even when text is unchanged (immutability)', function () {
+    var t1 = app.createTodo('Same text');
+    var result = app.editTodo([t1], t1.id, 'Same text');
+    assertEqual(result[0].text, 'Same text', 'text unchanged');
+    assertTrue(result[0] !== t1, 'new object created');
+    assertTrue(result !== [t1], 'new array returned');
+  });
+
   // --- filterTodos ---
   suite('filterTodos');
 

@@ -13,16 +13,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Clear completed button now shows dynamic count of completed todos (e.g. "Clear completed (3)")
 - CONTRIBUTING.md with development workflow and coding guidelines
 - CHANGELOG.md to track project history
+- New test: `editTodo` creates a new object even when text is unchanged (immutability guarantee)
 
 ### Changed
 - Updated README.md and README.zh-CN.md with filter and clear-completed usage docs
-- Updated test count badge in README.md from 72 to 98 passing
+- Updated test count badge in README.md from 72 to 101 passing
 
 ### UX
 - Context-aware empty state: shows "No todos yet" when the list is truly empty, vs "No matching todos" when the current filter hides all items (prevents user confusion when filtering)
 - "Clear completed" button now auto-hides when there are no completed todos, reducing visual clutter
+- Inline edit input now selects all text on focus, so users can immediately type to replace the existing content instead of manually clearing first
 
 ### Fixed
+- `clearCompleted` always returned a new array reference even when no completed todos existed, causing unnecessary re-renders; now returns the same reference when there is nothing to clear (consistent with `addTodo` and `editTodo` early-return behavior)
 - "Clear completed" button visibility was not updated after add, toggle, delete, or clear-completed operations — only updated during inline edit — so the button stayed hidden when it should have been visible (and vice versa); now `updateClearCompletedButton` is called after every state mutation and on initial render
 - Inline editing double-fire bug: pressing Escape (or Enter) during edit triggered `finishEdit` from both the `keydown` and subsequent `blur` event, causing a DOM `NotFoundError` because `editInput` had already been replaced by `textSpan` — added an `isFinished` guard flag to ensure `finishEdit` runs exactly once per edit session
 - Test suite crashed on load: mock `document` was missing `getElementById` and `readyState`, causing `init()` to throw `TypeError` before any tests could run
@@ -44,4 +47,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Marketing launch posts (Reddit, Hacker News, Twitter, Juejin)
 
 ### Fixed
-- Test count inconsistency across documentation: README.md body text and project tree said "72 tests" while the badge and actual test suite reported 98; README.zh-CN.md badge said "72 passing" while body text said "72"; CONTRIBUTING.md said "72 tests" — all references now consistently state 98 tests
+- Test count inconsistency across documentation: README.md body text and project tree said "72 tests" while the badge and actual test suite reported 101; README.zh-CN.md badge said "72 passing" while body text said "72"; CONTRIBUTING.md said "72 tests" — all references now consistently state 101 tests

@@ -139,6 +139,12 @@
    * @returns {Todo[]} New state with only incomplete todos
    */
   function clearCompleted(todos) {
+    var hasCompleted = todos.some(function (todo) {
+      return todo.completed;
+    });
+    if (!hasCompleted) {
+      return todos;
+    }
     return todos.filter(function (todo) {
       return !todo.completed;
     });
@@ -405,9 +411,9 @@
       // Replace the text span with the edit input
       li.replaceChild(editInput, textSpan);
       editInput.focus();
-      // Place cursor at end
+      // Select all text so users can immediately type to replace
       var len = editInput.value.length;
-      editInput.setSelectionRange(len, len);
+      editInput.setSelectionRange(0, len);
 
       var isFinished = false;
 

@@ -3,7 +3,7 @@
 > A lightweight, zero-dependency todo list web app with localStorage persistence — add, complete, delete, edit, and filter tasks in a clean, responsive interface.
 
 [![License: MIT](https://img.shields.io/github/license/Hanley-Liu/todo-app?color=blue&style=flat)](LICENSE)
-[![Tests: 100 passing](https://img.shields.io/badge/Tests-100%20passing-brightgreen?style=flat)](tests/app.test.js)
+[![Tests: 101 passing](https://img.shields.io/badge/Tests-101%20passing-brightgreen?style=flat)](tests/app.test.js)
 [![CI](https://img.shields.io/github/actions/workflow/Hanley-Liu/todo-app/ci.yml?branch=main&label=CI&style=flat)](.github/workflows/ci.yml)
 [![GitHub Stars](https://img.shields.io/github/stars/Hanley-Liu/todo-app?style=flat&color=gold)](https://github.com/Hanley-Liu/todo-app/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/Hanley-Liu/todo-app?style=flat&color=lightgrey)](https://github.com/Hanley-Liu/todo-app/network)
@@ -26,7 +26,7 @@
 - **Responsive design** — adapts to mobile and desktop screens
 - **XSS-safe rendering** — all user text is inserted via `textContent`; `innerHTML` is never used
 - **Graceful degradation** — when `localStorage` is unavailable (private mode), the app keeps working in-memory for the session
-- **100% unit tested** — a dependency-free test runner covers the core logic (run `node tests/app.test.js`)
+- **101 unit tests** — a dependency-free test runner covers the core logic (run `node tests/app.test.js`)
 
 ---
 
@@ -92,7 +92,7 @@ The project ships with a self-contained test suite using a minimal, dependency-f
 node tests/app.test.js
 ```
 
-This runs **100 tests** covering:
+This runs **101 tests** covering:
 
 - `hasValidInput` — input validation (6 tests)
 - `createTodo` — todo creation & ID generation (3 tests)
@@ -120,7 +120,7 @@ todo-app/
 ├── style.css               # All styling + responsive layout
 ├── app.js                  # Core logic (pure functions + DOM + persistence)
 ├── tests/
-│   └── app.test.js         # Dependency-free unit test suite (100 tests)
+│   └── app.test.js         # Dependency-free unit test suite (101 tests)
 ├── discussion/
 │   ├── product-requirements.md
 │   ├── architecture.md
