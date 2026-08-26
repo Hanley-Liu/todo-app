@@ -448,6 +448,7 @@
 
     // Initial render
     render(todos, currentFilter, list, emptyState);
+    updateClearCompletedButton(todos, clearCompletedBtn);
 
     // --- Input validation: toggle Add button on every keystroke ---
     input.addEventListener('input', function () {
@@ -466,6 +467,7 @@
       todos = addTodo(todos, input.value);
       saveToLocalStorage(todos);
       render(todos, currentFilter, list, emptyState);
+      updateClearCompletedButton(todos, clearCompletedBtn);
 
       input.value = '';
       addBtn.disabled = true;
@@ -483,6 +485,7 @@
         todos = toggleTodo(todos, id);
         saveToLocalStorage(todos);
         render(todos, currentFilter, list, emptyState);
+        updateClearCompletedButton(todos, clearCompletedBtn);
       }
 
       if (e.target.classList.contains('edit-btn')) {
@@ -493,6 +496,7 @@
         todos = deleteTodo(todos, id);
         saveToLocalStorage(todos);
         render(todos, currentFilter, list, emptyState);
+        updateClearCompletedButton(todos, clearCompletedBtn);
       }
     });
 
@@ -514,6 +518,7 @@
       todos = clearCompleted(todos);
       saveToLocalStorage(todos);
       render(todos, currentFilter, list, emptyState);
+      updateClearCompletedButton(todos, clearCompletedBtn);
     });
   }
 
