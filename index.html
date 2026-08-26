@@ -23,7 +23,14 @@
 
     <p id="empty-state" class="empty-state hidden">No todos yet</p>
 
-    <ul id="todo-list" class="todo-list" aria-label="Todo list"></ul>
+    <ul id="todo-list" class="todo-list" aria-label="Todo list" aria-live="polite" aria-relevant="all"></ul>
+
+    <div id="filter-bar" class="filter-bar">
+      <button type="button" class="filter-btn active" data-filter="all">All</button>
+      <button type="button" class="filter-btn" data-filter="active">Active</button>
+      <button type="button" class="filter-btn" data-filter="completed">Completed</button>
+      <button id="clear-completed" type="button" class="clear-completed-btn">Clear completed</button>
+    </div>
   </main>
 
   <script src="app.js"></script>

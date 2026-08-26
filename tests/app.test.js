@@ -11,6 +11,113 @@
 (function () {
   'use strict';
 
+  // --- Install mock document BEFORE requiring app.js ---
+  // app.js checks for document at module load time (init guards)
+  var mockDocument = {
+    createElement: function (tag) {
+      var el = {
+        tagName: tag.toUpperCase(),
+        className: '',
+        dataset: {},
+        children: [],
+        childNodes: [],
+        textContent: '',
+        value: '',
+        type: '',
+        checked: false,
+        disabled: false,
+        maxLength: '',
+        _classList: [],
+        _className: '',
+        _attrs: {},
+        _eventListeners: {},
+        appendChild: function (child) {
+          this.children.push(child);
+          this.childNodes.push(child);
+          return child;
+        },
+        removeChild: function (child) {
+          var idx = this.children.indexOf(child);
+          if (idx > -1) this.children.splice(idx, 1);
+          var cidx = this.childNodes.indexOf(child);
+          if (cidx > -1) this.childNodes.splice(cidx, 1);
+          return child;
+        },
+        querySelector: function (sel) {
+          for (var i = 0; i < this.children.length; i++) {
+            if (this.children[i].className && this.children[i].className.indexOf(sel.slice(1)) > -1) {
+              return this.children[i];
+            }
+          }
+          return null;
+        },
+        querySelectorAll: function () { return []; },
+        setAttribute: function (name, val) { this._attrs[name] = val; },
+        getAttribute: function (name) { return this._attrs[name] || null; },
+        addEventListener: function (type, fn) {
+          this._eventListeners[type] = fn;
+        },
+        classList: {
+          _classes: [],
+          contains: function (cls) {
+            return this._classes.indexOf(cls) > -1;
+          },
+          add: function (cls) {
+            if (this._classes.indexOf(cls) === -1) this._classes.push(cls);
+          },
+          remove: function (cls) {
+            var idx = this._classes.indexOf(cls);
+            if (idx > -1) this._classes.splice(idx, 1);
+          },
+          toggle: function (cls, force) {
+            if (force === undefined) {
+              var idx = this._classes.indexOf(cls);
+              if (idx > -1) this._classes.splice(idx, 1);
+              else this._classes.push(cls);
+            } else if (force) {
+              if (this._classes.indexOf(cls) === -1) this._classes.push(cls);
+            } else {
+              var idx2 = this._classes.indexOf(cls);
+              if (idx2 > -1) this._classes.splice(idx2, 1);
+            }
+          },
+        },
+        setSelectionRange: function () {},
+        focus: function () {},
+      };
+      el.classList._classes = el._classList;
+      Object.defineProperty(el, 'className', {
+        get: function () { return el._className; },
+        set: function (val) {
+          el._className = val || '';
+          el._classList.length = 0;
+          if (val) {
+            val.split(/\s+/).forEach(function (c) {
+              if (c) el._classList.push(c);
+            });
+          }
+        },
+        configurable: true,
+      });
+      return el;
+    },
+    createDocumentFragment: function () {
+      return {
+        children: [],
+        appendChild: function (el) {
+          this.children.push(el);
+          return el;
+        },
+      };
+    },
+    getElementById: function (id) {
+      return null;
+    },
+    readyState: 'complete',
+  };
+
+  global.document = mockDocument;
+
   var app = require('../app.js');
 
   // -------------------------------------------------------------------------
@@ -125,6 +232,69 @@
       setItem: function () { throw new Error('QuotaExceededError'); },
       removeItem: function () {},
       clear: function () {},
+    };
+  }
+
+  // --- Minimal DOM mocks for render/createTodoElement/updateAddButton tests ---
+
+  function createMockList() {
+    var children = [];
+    return {
+      children: children,
+      appendChild: function (el) {
+        if (el && el.children && el.tagName === undefined) {
+          for (var i = 0; i < el.children.length; i++) {
+            children.push(el.children[i]);
+          }
+          return el;
+        }
+        children.push(el);
+        return el;
+      },
+      removeChild: function (el) {
+        var idx = children.indexOf(el);
+        if (idx > -1) children.splice(idx, 1);
+        return el;
+      },
+      querySelector: function () { return null; },
+      querySelectorAll: function () { return []; },
+      addEventListener: function () {},
+      get firstChild() {
+        return children.length > 0 ? children[0] : null;
+      },
+    };
+  }
+
+  function createMockEmptyState() {
+    return {
+      classList: {
+        _hidden: false,
+        contains: function (cls) {
+          if (cls === 'hidden') return this._hidden;
+          return false;
+        },
+        add: function (cls) {
+          if (cls === 'hidden') this._hidden = true;
+        },
+        remove: function (cls) {
+          if (cls === 'hidden') this._hidden = false;
+        },
+        toggle: function (cls, force) {
+          if (cls === 'hidden') this._hidden = force;
+        },
+      },
+    };
+  }
+
+  function createMockInput(initialValue) {
+    return {
+      value: initialValue || '',
+    };
+  }
+
+  function createMockButton() {
+    return {
+      disabled: false,
     };
   }
 
@@ -316,6 +486,164 @@
     var t1 = app.createTodo('Only');
     var result = app.deleteTodo([t1], t1.id);
     assertEqual(result.length, 0, 'empty result');
+  });
+
+  // --- editTodo ---
+  suite('editTodo');
+
+  test('updates the text of the matching todo', function () {
+    var t1 = app.createTodo('Old text');
+    var result = app.editTodo([t1], t1.id, 'New text');
+    assertEqual(result[0].text, 'New text', 'text updated');
+  });
+
+  test('trims whitespace from the new text', function () {
+    var t1 = app.createTodo('Old');
+    var result = app.editTodo([t1], t1.id, '  New text  ');
+    assertEqual(result[0].text, 'New text', 'text trimmed');
+  });
+
+  test('does not mutate the original array or objects', function () {
+    var t1 = app.createTodo('Old');
+    var original = [t1];
+    var result = app.editTodo(original, t1.id, 'New');
+    assertEqual(original[0].text, 'Old', 'original unchanged');
+    assertTrue(result[0] !== original[0], 'new object created');
+  });
+
+  test('leaves other todos unchanged when editing one', function () {
+    var t1 = app.createTodo('A');
+    var t2 = app.createTodo('B');
+    var result = app.editTodo([t1, t2], t1.id, 'A-edited');
+    assertEqual(result[0].text, 'A-edited', 't1 edited');
+    assertEqual(result[1].text, 'B', 't2 unchanged');
+  });
+
+  test('ignores empty input (returns same array)', function () {
+    var t1 = app.createTodo('Original');
+    var result = app.editTodo([t1], t1.id, '');
+    assertDeepEqual(result, [t1], 'same array returned');
+  });
+
+  test('ignores whitespace-only input', function () {
+    var t1 = app.createTodo('Original');
+    var result = app.editTodo([t1], t1.id, '   ');
+    assertDeepEqual(result, [t1], 'same array returned');
+  });
+
+  test('returns same-length array when id not found', function () {
+    var t1 = app.createTodo('Task');
+    var result = app.editTodo([t1], 'nonexistent-id', 'New');
+    assertEqual(result.length, 1, 'unchanged');
+    assertEqual(result[0].text, 'Task', 'text unchanged');
+  });
+
+  test('handles empty array', function () {
+    var result = app.editTodo([], 'any-id', 'New');
+    assertEqual(result.length, 0, 'empty array');
+  });
+
+  // --- filterTodos ---
+  suite('filterTodos');
+
+  test('returns all todos when filter is "all"', function () {
+    var todos = [
+      app.createTodo('A'),
+      app.createTodo('B'),
+    ];
+    todos[0].completed = true;
+    var result = app.filterTodos(todos, 'all');
+    assertEqual(result.length, 2, 'all returned');
+  });
+
+  test('returns only incomplete todos when filter is "active"', function () {
+    var todos = [
+      app.createTodo('A'),
+      app.createTodo('B'),
+      app.createTodo('C'),
+    ];
+    todos[0].completed = true;
+    todos[2].completed = true;
+    var result = app.filterTodos(todos, 'active');
+    assertEqual(result.length, 1, 'only active');
+    assertEqual(result[0].text, 'B', 'correct active todo');
+  });
+
+  test('returns only completed todos when filter is "completed"', function () {
+    var todos = [
+      app.createTodo('A'),
+      app.createTodo('B'),
+      app.createTodo('C'),
+    ];
+    todos[0].completed = true;
+    todos[2].completed = true;
+    var result = app.filterTodos(todos, 'completed');
+    assertEqual(result.length, 2, 'only completed');
+    assertEqual(result[0].text, 'A', 'first completed');
+    assertEqual(result[1].text, 'C', 'second completed');
+  });
+
+  test('returns empty array when no todos match the filter', function () {
+    var todos = [app.createTodo('A')];
+    var result = app.filterTodos(todos, 'completed');
+    assertEqual(result.length, 0, 'empty');
+  });
+
+  test('does not mutate the original array', function () {
+    var todos = [app.createTodo('A'), app.createTodo('B')];
+    todos[0].completed = true;
+    var result = app.filterTodos(todos, 'active');
+    assertEqual(todos.length, 2, 'original unchanged');
+    assertTrue(result !== todos, 'new array returned');
+  });
+
+  test('handles empty array', function () {
+    assertEqual(app.filterTodos([], 'all').length, 0, 'empty all');
+    assertEqual(app.filterTodos([], 'active').length, 0, 'empty active');
+    assertEqual(app.filterTodos([], 'completed').length, 0, 'empty completed');
+  });
+
+  // --- clearCompleted ---
+  suite('clearCompleted');
+
+  test('removes all completed todos', function () {
+    var todos = [
+      app.createTodo('A'),
+      app.createTodo('B'),
+      app.createTodo('C'),
+    ];
+    todos[0].completed = true;
+    todos[2].completed = true;
+    var result = app.clearCompleted(todos);
+    assertEqual(result.length, 1, 'only incomplete remains');
+    assertEqual(result[0].text, 'B', 'correct item kept');
+  });
+
+  test('returns same array when no todos are completed', function () {
+    var todos = [app.createTodo('A'), app.createTodo('B')];
+    var result = app.clearCompleted(todos);
+    assertEqual(result.length, 2, 'all kept');
+  });
+
+  test('returns empty array when all todos are completed', function () {
+    var todos = [app.createTodo('A'), app.createTodo('B')];
+    todos[0].completed = true;
+    todos[1].completed = true;
+    var result = app.clearCompleted(todos);
+    assertEqual(result.length, 0, 'all removed');
+  });
+
+  test('does not mutate the original array', function () {
+    var todos = [app.createTodo('A'), app.createTodo('B')];
+    todos[0].completed = true;
+    var result = app.clearCompleted(todos);
+    assertEqual(todos.length, 2, 'original unchanged');
+    assertTrue(result !== todos, 'new array returned');
+  });
+
+  test('handles empty array', function () {
+    var result = app.clearCompleted([]);
+    assertEqual(result.length, 0, 'empty array');
   });
 
   // --- isValidTodo ---
@@ -594,6 +922,180 @@
     assertEqual(loaded.length, 1, 'one remaining');
     assertEqual(loaded[0].id, t1.id, 'correct item kept');
     uninstallMockStorage();
+  });
+
+  // --- generateId ---
+  suite('generateId');
+
+  test('returns a non-empty string', function () {
+    var id = app.generateId();
+    assertTrue(typeof id === 'string', 'should be string');
+    assertTrue(id.length > 0, 'should be non-empty');
+  });
+
+  test('generates unique ids across multiple calls', function () {
+    var ids = [];
+    var i;
+    for (i = 0; i < 100; i++) {
+      ids.push(app.generateId());
+    }
+    var unique = {};
+    for (i = 0; i < ids.length; i++) {
+      unique[ids[i]] = true;
+    }
+    assertEqual(Object.keys(unique).length, 100, 'all 100 ids unique');
+  });
+
+  // --- createTodoElement ---
+  suite('createTodoElement');
+
+  test('creates an <li> element with correct data-id', function () {
+    var todo = app.createTodo('Test task');
+    var li = app.createTodoElement(todo);
+    assertEqual(li.tagName.toLowerCase(), 'li', 'tag is li');
+    assertEqual(li.dataset.id, todo.id, 'data-id matches');
+    assertEqual(li.className, 'todo-item', 'has todo-item class');
+  });
+
+  test('renders todo text in a span with .todo-text class', function () {
+    var todo = app.createTodo('My task');
+    var li = app.createTodoElement(todo);
+    var textSpan = li.querySelector('.todo-text');
+    assertTrue(textSpan !== null, 'text span exists');
+    assertEqual(textSpan.textContent, 'My task', 'text content correct');
+  });
+
+  test('includes a checkbox with correct checked state', function () {
+    var todo = app.createTodo('Task');
+    var li = app.createTodoElement(todo);
+    var checkbox = li.querySelector('.todo-checkbox');
+    assertTrue(checkbox !== null, 'checkbox exists');
+    assertEqual(checkbox.type, 'checkbox', 'type is checkbox');
+    assertFalse(checkbox.checked, 'unchecked when not completed');
+  });
+
+  test('checkbox is checked when todo is completed', function () {
+    var todo = app.createTodo('Task');
+    todo.completed = true;
+    var li = app.createTodoElement(todo);
+    var checkbox = li.querySelector('.todo-checkbox');
+    assertTrue(checkbox.checked, 'checked when completed');
+  });
+
+  test('includes an edit button with .edit-btn class', function () {
+    var todo = app.createTodo('Task');
+    var li = app.createTodoElement(todo);
+    var editBtn = li.querySelector('.edit-btn');
+    assertTrue(editBtn !== null, 'edit button exists');
+    assertEqual(editBtn.type, 'button', 'type is button');
+  });
+
+  test('includes a delete button with .delete-btn class', function () {
+    var todo = app.createTodo('Task');
+    var li = app.createTodoElement(todo);
+    var delBtn = li.querySelector('.delete-btn');
+    assertTrue(delBtn !== null, 'delete button exists');
+    assertEqual(delBtn.type, 'button', 'type is button');
+  });
+
+  test('applies strikethrough class when todo is completed', function () {
+    var todo = app.createTodo('Task');
+    todo.completed = true;
+    var li = app.createTodoElement(todo);
+    assertTrue(li.classList.contains('completed'), 'li has completed class');
+  });
+
+  test('does not apply strikethrough class when todo is incomplete', function () {
+    var todo = app.createTodo('Task');
+    var li = app.createTodoElement(todo);
+    var textSpan = li.querySelector('.todo-text');
+    assertFalse(textSpan.classList.contains('completed'), 'no completed class');
+  });
+
+  // --- render ---
+  suite('render');
+
+  test('renders visible todos based on filter', function () {
+    var list = createMockList();
+    var emptyState = createMockEmptyState();
+    var todos = [
+      app.createTodo('A'),
+      app.createTodo('B'),
+    ];
+    todos[0].completed = true;
+
+    app.render(todos, 'all', list, emptyState);
+    assertEqual(list.children.length, 2, 'all filter shows 2');
+
+    app.render(todos, 'active', list, emptyState);
+    assertEqual(list.children.length, 1, 'active filter shows 1');
+
+    app.render(todos, 'completed', list, emptyState);
+    assertEqual(list.children.length, 1, 'completed filter shows 1');
+  });
+
+  test('shows empty state when no todos match filter', function () {
+    var list = createMockList();
+    var emptyState = createMockEmptyState();
+    var todos = [app.createTodo('A')];
+
+    app.render(todos, 'completed', list, emptyState);
+    assertEqual(list.children.length, 0, 'no items rendered');
+    assertFalse(emptyState.classList.contains('hidden'), 'empty state visible');
+  });
+
+  test('hides empty state when todos are visible', function () {
+    var list = createMockList();
+    var emptyState = createMockEmptyState();
+    var todos = [app.createTodo('A')];
+
+    app.render(todos, 'all', list, emptyState);
+    assertEqual(list.children.length, 1, 'one item rendered');
+    assertTrue(emptyState.classList.contains('hidden'), 'empty state hidden');
+  });
+
+  test('clears previous list content before rendering', function () {
+    var list = createMockList();
+    var emptyState = createMockEmptyState();
+    var todos = [app.createTodo('A'), app.createTodo('B')];
+
+    app.render(todos, 'all', list, emptyState);
+    assertEqual(list.children.length, 2, '2 items');
+
+    // Render with fewer items
+    app.render([todos[0]], 'all', list, emptyState);
+    assertEqual(list.children.length, 1, '1 item after re-render');
+  });
+
+  // --- updateAddButton ---
+  suite('updateAddButton');
+
+  test('disables button when input is empty', function () {
+    var input = createMockInput('');
+    var btn = createMockButton();
+    app.updateAddButton(input, btn);
+    assertTrue(btn.disabled, 'button disabled for empty input');
+  });
+
+  test('disables button when input is whitespace-only', function () {
+    var input = createMockInput('   ');
+    var btn = createMockButton();
+    app.updateAddButton(input, btn);
+    assertTrue(btn.disabled, 'button disabled for whitespace input');
+  });
+
+  test('enables button when input has text', function () {
+    var input = createMockInput('Hello');
+    var btn = createMockButton();
+    app.updateAddButton(input, btn);
+    assertFalse(btn.disabled, 'button enabled for valid input');
+  });
+
+  test('enables button when input has text with leading/trailing spaces', function () {
+    var input = createMockInput('  Hello  ');
+    var btn = createMockButton();
+    app.updateAddButton(input, btn);
+    assertFalse(btn.disabled, 'button enabled for trimmed input');
   });
 
   // -------------------------------------------------------------------------

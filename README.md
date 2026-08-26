@@ -1,9 +1,9 @@
 # Todo App
 
-> A lightweight, zero-dependency todo list web app with localStorage persistence — add, complete, and delete tasks in a clean, responsive interface.
+> A lightweight, zero-dependency todo list web app with localStorage persistence — add, complete, delete, edit, and filter tasks in a clean, responsive interface.
 
 [![License: MIT](https://img.shields.io/github/license/Hanley-Liu/todo-app?color=blue&style=flat)](LICENSE)
-[![Tests: 53 passing](https://img.shields.io/badge/Tests-53%20passing-brightgreen?style=flat)](tests/app.test.js)
+[![Tests: 72 passing](https://img.shields.io/badge/Tests-72%20passing-brightgreen?style=flat)](tests/app.test.js)
 [![CI](https://img.shields.io/github/actions/workflow/Hanley-Liu/todo-app/ci.yml?branch=main&label=CI&style=flat)](.github/workflows/ci.yml)
 [![GitHub Stars](https://img.shields.io/github/stars/Hanley-Liu/todo-app?style=flat&color=gold)](https://github.com/Hanley-Liu/todo-app/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/Hanley-Liu/todo-app?style=flat&color=lightgrey)](https://github.com/Hanley-Liu/todo-app/network)
@@ -17,6 +17,9 @@
 - **Add todos** — type a task and hit Enter or the Add button
 - **Toggle complete** — click the checkbox to mark items done / undone
 - **Delete todos** — remove any item with its Delete button
+- **Edit todos** — click the Edit button to modify an existing task
+- **Filter views** — switch between All, Active, and Completed filters
+- **Clear completed** — one-click removal of all completed items
 - **Persistent storage** — todos are saved to `localStorage` and survive page reloads
 - **Real-time validation** — empty and whitespace-only input is rejected; the Add button disables automatically
 - **Empty state** — a friendly "No todos yet" message appears when the list is empty
@@ -89,13 +92,16 @@ The project ships with a self-contained test suite using a minimal, dependency-f
 node tests/app.test.js
 ```
 
-This runs **53 tests** covering:
+This runs **72 tests** covering:
 
 - `hasValidInput` — input validation (6 tests)
 - `createTodo` — todo creation & ID generation (3 tests)
 - `addTodo` — adding, trimming, immutability (6 tests)
 - `toggleTodo` — completion toggling (5 tests)
 - `deleteTodo` — removal, immutability (5 tests)
+- `editTodo` — editing, trimming, invalid input rejection (5 tests)
+- `filterTodos` — all/active/completed filtering (5 tests)
+- `clearCompleted` — bulk removal, immutability (4 tests)
 - `isValidTodo` — type/shape validation (8 tests)
 - `sanitizeTodos` — array filtering (4 tests)
 - `saveToLocalStorage` — serialization & degradation (4 tests)
@@ -114,7 +120,7 @@ todo-app/
 ├── style.css               # All styling + responsive layout
 ├── app.js                  # Core logic (pure functions + DOM + persistence)
 ├── tests/
-│   └── app.test.js         # Dependency-free unit test suite (53 tests)
+│   └── app.test.js         # Dependency-free unit test suite (72 tests)
 ├── discussion/
 │   ├── product-requirements.md
 │   ├── architecture.md

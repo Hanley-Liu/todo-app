@@ -91,6 +91,59 @@
     });
   }
 
+  /**
+   * Updates the text of the todo with the given id.
+   * Pure: does not mutate the input array.
+   * @param {Todo[]} todos — Current state
+   * @param {string} id — Todo id to edit
+   * @param {string} text — New text value
+   * @returns {Todo[]} New state with the matching todo's text updated
+   */
+  function editTodo(todos, id, text) {
+    if (!hasValidInput(text)) {
+      return todos;
+    }
+    var trimmed = text.trim();
+    return todos.map(function (todo) {
+      if (todo.id === id) {
+        return Object.assign({}, todo, { text: trimmed });
+      }
+      return todo;
+    });
+  }
+
+  /**
+   * Filters todos by the given filter type.
+   * @param {Todo[]} todos — Current state
+   * @param {string} filter — 'all' | 'active' | 'completed'
+   * @returns {Todo[]} Filtered list (does not mutate input)
+   */
+  function filterTodos(todos, filter) {
+    if (filter === 'active') {
+      return todos.filter(function (todo) {
+        return !todo.completed;
+      });
+    }
+    if (filter === 'completed') {
+      return todos.filter(function (todo) {
+        return todo.completed;
+      });
+    }
+    return todos;
+  }
+
+  /**
+   * Removes all completed todos from state.
+   * Pure: does not mutate the input array.
+   * @param {Todo[]} todos — Current state
+   * @returns {Todo[]} New state with only incomplete todos
+   */
+  function clearCompleted(todos) {
+    return todos.filter(function (todo) {
+      return !todo.completed;
+    });
+  }
+
   // ---------------------------------------------------------------------------
   // Validation & Sanitization (Security)
   // ---------------------------------------------------------------------------
@@ -223,6 +276,12 @@
     // textContent is XSS-safe — never use innerHTML for user text
     textSpan.textContent = todo.text;
 
+    var editBtn = document.createElement('button');
+    editBtn.type = 'button';
+    editBtn.className = 'edit-btn';
+    editBtn.textContent = 'Edit';
+    editBtn.setAttribute('aria-label', 'Edit todo');
+
     var deleteBtn = document.createElement('button');
     deleteBtn.type = 'button';
     deleteBtn.className = 'delete-btn';
@@ -231,6 +290,7 @@
 
     li.appendChild(checkbox);
     li.appendChild(textSpan);
+    li.appendChild(editBtn);
     li.appendChild(deleteBtn);
 
     return li;
@@ -240,23 +300,26 @@
    * Re-renders the todo list from the current state.
    * Shows the empty-state message when the list is empty.
    * Uses textContent exclusively — no innerHTML.
-   * @param {Todo[]} todos
+   * @param {Todo[]} todos — The full state (unfiltered)
+   * @param {string} filter — 'all' | 'active' | 'completed'
    * @param {HTMLUListElement} listElement
    * @param {HTMLElement} emptyStateElement
    */
-  function render(todos, listElement, emptyStateElement) {
+  function render(todos, filter, listElement, emptyStateElement) {
+    var visibleTodos = filterTodos(todos, filter);
+
     // Clear existing list contents
     while (listElement.firstChild) {
       listElement.removeChild(listElement.firstChild);
     }
 
-    if (todos.length === 0) {
+    if (visibleTodos.length === 0) {
       emptyStateElement.classList.remove('hidden');
     } else {
       emptyStateElement.classList.add('hidden');
 
       var fragment = document.createDocumentFragment();
-      todos.forEach(function (todo) {
+      visibleTodos.forEach(function (todo) {
         fragment.appendChild(createTodoElement(todo));
       });
       listElement.appendChild(fragment);
@@ -283,17 +346,78 @@
     var addBtn = document.getElementById('add-btn');
     var list = document.getElementById('todo-list');
     var emptyState = document.getElementById('empty-state');
+    var filterBar = document.getElementById('filter-bar');
+    var clearCompletedBtn = document.getElementById('clear-completed');
 
-    if (!form || !input || !addBtn || !list || !emptyState) {
+    if (!form || !input || !addBtn || !list || !emptyState || !filterBar || !clearCompletedBtn) {
       console.error('Todo App: Required DOM elements not found');
       return;
     }
 
     // Load persisted state (or empty array if unavailable)
     var todos = loadFromLocalStorage();
+    var currentFilter = 'all';
+
+    // --- Inline editing ---
+    function startEditTodo(li, id) {
+      // Prevent double-edit
+      if (li.classList.contains('editing')) return;
+
+      li.classList.add('editing');
+
+      var textSpan = li.querySelector('.todo-text');
+      var currentText = textSpan.textContent;
+
+      var editInput = document.createElement('input');
+      editInput.type = 'text';
+      editInput.className = 'edit-input';
+      editInput.value = currentText;
+      editInput.setAttribute('aria-label', 'Edit todo text');
+      editInput.maxLength = 250;
+
+      // Replace the text span with the edit input
+      li.replaceChild(editInput, textSpan);
+      editInput.focus();
+      // Place cursor at end
+      var len = editInput.value.length;
+      editInput.setSelectionRange(len, len);
+
+      var finishEdit = function (save) {
+        li.classList.remove('editing');
+
+        // Restore the text span
+        li.replaceChild(textSpan, editInput);
+
+        if (save && hasValidInput(editInput.value)) {
+          var trimmed = editInput.value.trim();
+          if (trimmed !== currentText) {
+            todos = editTodo(todos, id, trimmed);
+            saveToLocalStorage(todos);
+            render(todos, currentFilter, list, emptyState);
+          }
+        }
+
+        // Return focus to the main input for continued use
+        input.focus();
+      };
+
+      editInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          finishEdit(true);
+        } else if (e.key === 'Escape') {
+          e.preventDefault();
+          finishEdit(false);
+        }
+      });
+
+      editInput.addEventListener('blur', function () {
+        finishEdit(true);
+      });
+    }
 
     // Initial render
-    render(todos, list, emptyState);
+    render(todos, currentFilter, list, emptyState);
 
     // --- Input validation: toggle Add button on every keystroke ---
     input.addEventListener('input', function () {
@@ -311,13 +435,14 @@
 
       todos = addTodo(todos, input.value);
       saveToLocalStorage(todos);
-      render(todos, list, emptyState);
+      render(todos, currentFilter, list, emptyState);
 
       input.value = '';
       addBtn.disabled = true;
+      input.focus(); // Return focus to input after adding
     });
 
-    // --- Event delegation: toggle complete / delete on the list ---
+    // --- Event delegation: toggle complete / edit / delete on the list ---
     list.addEventListener('click', function (e) {
       var li = e.target.closest('.todo-item');
       if (!li) return;
@@ -327,14 +452,38 @@
       if (e.target.classList.contains('todo-checkbox')) {
         todos = toggleTodo(todos, id);
         saveToLocalStorage(todos);
-        render(todos, list, emptyState);
+        render(todos, currentFilter, list, emptyState);
+      }
+
+      if (e.target.classList.contains('edit-btn')) {
+        startEditTodo(li, id);
       }
 
       if (e.target.classList.contains('delete-btn')) {
         todos = deleteTodo(todos, id);
         saveToLocalStorage(todos);
-        render(todos, list, emptyState);
+        render(todos, currentFilter, list, emptyState);
       }
+    });
+
+    // --- Filter buttons via event delegation ---
+    filterBar.addEventListener('click', function (e) {
+      if (e.target.classList.contains('filter-btn')) {
+        currentFilter = e.target.dataset.filter;
+        // Update active state on filter buttons
+        var buttons = filterBar.querySelectorAll('.filter-btn');
+        buttons.forEach(function (btn) {
+          btn.classList.toggle('active', btn === e.target);
+        });
+        render(todos, currentFilter, list, emptyState);
+      }
+    });
+
+    // --- Clear completed button ---
+    clearCompletedBtn.addEventListener('click', function () {
+      todos = clearCompleted(todos);
+      saveToLocalStorage(todos);
+      render(todos, currentFilter, list, emptyState);
     });
   }
 
@@ -359,11 +508,17 @@
       addTodo: addTodo,
       toggleTodo: toggleTodo,
       deleteTodo: deleteTodo,
+      editTodo: editTodo,
+      filterTodos: filterTodos,
+      clearCompleted: clearCompleted,
       isValidTodo: isValidTodo,
       sanitizeTodos: sanitizeTodos,
       saveToLocalStorage: saveToLocalStorage,
       loadFromLocalStorage: loadFromLocalStorage,
       getStorage: getStorage,
+      createTodoElement: createTodoElement,
+      render: render,
+      updateAddButton: updateAddButton,
     };
   }
 })();
