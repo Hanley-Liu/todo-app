@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Filter functionality: toggle between All, Active, and Completed views
 - Clear completed button: bulk-remove all completed todos
+- Clear completed button now shows dynamic count of completed todos (e.g. "Clear completed (3)")
 - CONTRIBUTING.md with development workflow and coding guidelines
 - CHANGELOG.md to track project history
 

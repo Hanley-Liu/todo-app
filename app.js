@@ -348,12 +348,19 @@
   /**
    * Shows or hides the "Clear completed" button based on whether any
    * todos are completed. Hides the button when there is nothing to clear.
+   * When visible, the button label includes a count of completed todos
+   * (e.g. "Clear completed (3)") so users know how many items will be removed.
    * @param {Todo[]} todos — The full state
    * @param {HTMLButtonElement} clearBtn
    */
   function updateClearCompletedButton(todos, clearBtn) {
-    var hasCompleted = todos.some(function (t) { return t.completed; });
-    clearBtn.classList.toggle('hidden', !hasCompleted);
+    var completedCount = todos.filter(function (t) { return t.completed; }).length;
+    if (completedCount > 0) {
+      clearBtn.classList.remove('hidden');
+      clearBtn.textContent = 'Clear completed (' + completedCount + ')';
+    } else {
+      clearBtn.classList.add('hidden');
+    }
   }
 
   // ---------------------------------------------------------------------------
