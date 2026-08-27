@@ -51,9 +51,33 @@ body {
   border-color: #4f8bff;
 }
 
-.todo-form input:disabled,
-.todo-form button:disabled {
-  /* disabled styling lives on the button */
+/* Focus indicators for keyboard accessibility */
+/* Use :focus-visible so mouse users don't see a persistent outline,
+   while keyboard users get a clear focus ring on every interactive element. */
+.todo-form input:focus-visible,
+.edit-input:focus-visible {
+  outline: 2px solid #4f8bff;
+  outline-offset: 2px;
+}
+
+#add-btn:focus-visible,
+.delete-btn:focus-visible,
+.edit-btn:focus-visible,
+.filter-btn:focus-visible,
+.clear-completed-btn:focus-visible {
+  outline: 2px solid #4f8bff;
+  outline-offset: 2px;
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Add button */
@@ -122,6 +146,11 @@ body {
   width: 1rem;
   height: 1rem;
   cursor: pointer;
+}
+
+.todo-checkbox:focus-visible {
+  outline: 2px solid #4f8bff;
+  outline-offset: 2px;
 }
 
 /* Todo text */

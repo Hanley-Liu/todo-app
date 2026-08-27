@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Keyboard focus indicators (`:focus-visible`) on all interactive elements (buttons, checkboxes, inputs) for WCAG-compliant keyboard navigation
+- `prefers-reduced-motion` media query to disable CSS transitions/animations for users who request reduced motion
+
+### Changed
+- Replaced empty no-op CSS rule (`.todo-form input:disabled, .todo-form button:disabled`) with meaningful focus-visible styles
+
+### Added
 - Filter functionality: toggle between All, Active, and Completed views
 - Clear completed button: bulk-remove all completed todos
 - Clear completed button now shows dynamic count of completed todos (e.g. "Clear completed (3)")
