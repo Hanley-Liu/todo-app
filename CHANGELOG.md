@@ -33,6 +33,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Mock list `appendChild` did not transfer children from `DocumentFragment`, so rendered list length was 1 instead of the expected count
 - Mock list lacked a `firstChild` getter, so `render()` could not clear previous children between re-renders
 - Strikethrough test asserted `completed` class on `.todo-text` span instead of the `.todo-item` li (CSS applies strikethrough via descendant selector)
+- `editTodo` immutability test used a fresh array literal `[t1]` in the assertion `result !== [t1]`, which is always true and never verified the function returns a new array reference; corrected to compare against the original input array reference
+- `editTodo` empty/whitespace-input tests used `assertDeepEqual` (JSON equality) to verify the same array was returned, which cannot distinguish between a new array with identical contents and the original reference; switched to `assertEqual` (reference equality) to actually verify the documented early-return behavior
+- `clearCompleted` "returns same array" test only checked `result.length` and did not verify reference equality, so it could not detect a regression where a new array is returned unnecessarily; added `assertEqual(result, todos, ...)` reference check
 
 ## [1.0.0] - 2026-08-25
 

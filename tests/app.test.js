@@ -541,16 +541,18 @@
     assertEqual(result[1].text, 'B', 't2 unchanged');
   });
 
-  test('ignores empty input (returns same array)', function () {
+  test('ignores empty input (returns same array reference)', function () {
     var t1 = app.createTodo('Original');
-    var result = app.editTodo([t1], t1.id, '');
-    assertDeepEqual(result, [t1], 'same array returned');
+    var original = [t1];
+    var result = app.editTodo(original, t1.id, '');
+    assertEqual(result, original, 'same array reference returned');
   });
 
-  test('ignores whitespace-only input', function () {
+  test('ignores whitespace-only input (returns same array reference)', function () {
     var t1 = app.createTodo('Original');
-    var result = app.editTodo([t1], t1.id, '   ');
-    assertDeepEqual(result, [t1], 'same array returned');
+    var original = [t1];
+    var result = app.editTodo(original, t1.id, '   ');
+    assertEqual(result, original, 'same array reference returned');
   });
 
   test('returns same-length array when id not found', function () {
@@ -567,10 +569,11 @@
 
   test('creates a new object even when text is unchanged (immutability)', function () {
     var t1 = app.createTodo('Same text');
-    var result = app.editTodo([t1], t1.id, 'Same text');
+    var original = [t1];
+    var result = app.editTodo(original, t1.id, 'Same text');
     assertEqual(result[0].text, 'Same text', 'text unchanged');
     assertTrue(result[0] !== t1, 'new object created');
-    assertTrue(result !== [t1], 'new array returned');
+    assertTrue(result !== original, 'new array returned');
   });
 
   // --- filterTodos ---
@@ -649,10 +652,11 @@
     assertEqual(result[0].text, 'B', 'correct item kept');
   });
 
-  test('returns same array when no todos are completed', function () {
+  test('returns same array reference when no todos are completed', function () {
     var todos = [app.createTodo('A'), app.createTodo('B')];
     var result = app.clearCompleted(todos);
     assertEqual(result.length, 2, 'all kept');
+    assertEqual(result, todos, 'same array reference returned');
   });
 
   test('returns empty array when all todos are completed', function () {
