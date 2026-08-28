@@ -3,7 +3,7 @@
 > 一款轻量、零依赖的待办事项网页应用，基于 localStorage 持久化保存 — 添加、完成和删除任务，拥有干净且响应式的界面。
 
 [![License: MIT](https://img.shields.io/github/license/Hanley-Liu/todo-app?color=blue&style=flat)](LICENSE)
-[![Tests: 101 passing](https://img.shields.io/badge/Tests-101%20passing-brightgreen?style=flat)](tests/app.test.js)
+[![Tests: 102 passing](https://img.shields.io/badge/Tests-102%20passing-brightgreen?style=flat)](tests/app.test.js)
 [![CI](https://img.shields.io/github/actions/workflow/Hanley-Liu/todo-app/ci.yml?branch=main&label=CI&style=flat)](.github/workflows/ci.yml)
 [![GitHub Stars](https://img.shields.io/github/stars/Hanley-Liu/todo-app?style=flat&color=gold)](https://github.com/Hanley-Liu/todo-app/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/Hanley-Liu/todo-app?style=flat&color=lightgrey)](https://github.com/Hanley-Liu/todo-app/network)
@@ -89,7 +89,7 @@ npx serve .
 node tests/app.test.js
 ```
 
-共计 **101 个测试**，覆盖范围包括：
+共计 **102 个测试**，覆盖范围包括：
 
 - `hasValidInput` — 输入校验（6 测试）
 - `createTodo` — 待办创建与 ID 生成（3 测试）
@@ -97,7 +97,7 @@ node tests/app.test.js
 - `toggleTodo` — 完成状态切换（6 测试）
 - `deleteTodo` — 删除、不可变性（5 测试）
 - `editTodo` — 编辑、去除首尾空格、无效输入拒绝（9 测试）
-- `filterTodos` — 全部/活跃/已完成过滤（6 测试）
+- `filterTodos` — 全部/活跃/已完成过滤（7 测试)
 - `clearCompleted` — 批量移除、不可变性（5 测试）
 - `isValidTodo` — 类型与结构校验（8 测试）
 - `sanitizeTodos` — 数组过滤（4 测试）
@@ -123,7 +123,7 @@ todo-app/
 ├── style.css               # 全部样式及响应式布局
 ├── app.js                  # 核心逻辑（纯函数 + DOM + 持久化）
 ├── tests/
-│   └── app.test.js         # 零依赖单元测试套件（101 个测试）
+│   └── app.test.js         # 零依赖单元测试套件（102 个测试）
 ├── discussion/
 │   ├── product-requirements.md
 │   ├── architecture.md

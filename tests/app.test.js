@@ -589,6 +589,15 @@
     assertEqual(result.length, 2, 'all returned');
   });
 
+  test('returns a new array reference when filter is "all"', function () {
+    var todos = [
+      app.createTodo('A'),
+      app.createTodo('B'),
+    ];
+    var result = app.filterTodos(todos, 'all');
+    assertTrue(result !== todos, 'new array returned');
+  });
+
   test('returns only incomplete todos when filter is "active"', function () {
     var todos = [
       app.createTodo('A'),

@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- `filterTodos` now returns a new array reference for the 'all' filter (previously returned the same array reference, inconsistent with 'active'/'completed' branches that always return copies — could cause subtle mutation bugs in callers expecting immutability)
+
 ### Added
 - Keyboard focus indicators (`:focus-visible`) on all interactive elements (buttons, checkboxes, inputs) for WCAG-compliant keyboard navigation
 - `prefers-reduced-motion` media query to disable CSS transitions/animations for users who request reduced motion

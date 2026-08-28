@@ -129,7 +129,7 @@
         return todo.completed;
       });
     }
-    return todos;
+    return todos.slice();
   }
 
   /**
