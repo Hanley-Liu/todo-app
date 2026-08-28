@@ -58,3 +58,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Test count inconsistency across documentation: README.md body text and project tree said "72 tests" while the badge and actual test suite reported 101; README.zh-CN.md badge said "72 passing" while body text said "72"; CONTRIBUTING.md said "72 tests" — all references now consistently state 101 tests
+- README.md and README.zh-CN.md test breakdown listed incorrect per-suite test counts (e.g. `addTodo` 6→7, `editTodo` 5→9, `toggleTodo` 5→6, `filterTodos` 5→6, `clearCompleted` 4→5, `saveToLocalStorage` 4→5) and omitted six suites entirely (`generateId`, `createTodoElement`, `render`, `updateAddButton`, `updateClearCompletedButton`, `render (empty state)`); both READMEs now list all 19 suites with accurate counts

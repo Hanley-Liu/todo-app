@@ -93,17 +93,23 @@ node tests/app.test.js
 
 - `hasValidInput` — 输入校验（6 测试）
 - `createTodo` — 待办创建与 ID 生成（3 测试）
-- `addTodo` — 添加、去除首尾空格、不可变性（6 测试）
-- `toggleTodo` — 完成状态切换（5 测试）
+- `addTodo` — 添加、去除首尾空格、不可变性（7 测试）
+- `toggleTodo` — 完成状态切换（6 测试）
 - `deleteTodo` — 删除、不可变性（5 测试）
-- `editTodo` — 编辑、去除首尾空格、无效输入拒绝（5 测试）
-- `filterTodos` — 全部/活跃/已完成过滤（5 测试）
-- `clearCompleted` — 批量移除、不可变性（4 测试）
+- `editTodo` — 编辑、去除首尾空格、无效输入拒绝（9 测试）
+- `filterTodos` — 全部/活跃/已完成过滤（6 测试）
+- `clearCompleted` — 批量移除、不可变性（5 测试）
 - `isValidTodo` — 类型与结构校验（8 测试）
 - `sanitizeTodos` — 数组过滤（4 测试）
-- `saveToLocalStorage` — 序列化与降级处理（4 测试）
+- `saveToLocalStorage` — 序列化与降级处理（5 测试）
 - `loadFromLocalStorage` — 反序列化、损坏数据处理（6 测试）
 - 持久化往返 — 保存 → 加载，状态完整性校验（3 测试）
+- `generateId` — ID 唯一性与格式（2 测试）
+- `createTodoElement` — DOM 元素创建（8 测试）
+- `render` — 列表渲染与过滤可见性（4 测试）
+- `updateAddButton` — 添加按钮启用/禁用状态（4 测试）
+- `updateClearCompletedButton` — 清除已完成按钮可见性（6 测试）
+- `render (empty state)` — 空状态消息（4 测试）
 
 成功退出码为 `0`，失败为 `1`，便于集成到 CI 流水线。
 
