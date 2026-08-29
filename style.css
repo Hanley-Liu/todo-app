@@ -135,6 +135,12 @@ body {
   background: #f9fbfd;
 }
 
+/* Editing state: highlight the item being edited */
+.todo-item.editing {
+  background: #eff6ff;
+  border-color: #4f8bff;
+}
+
 /* Completed state: strikethrough */
 .todo-item.completed .todo-text {
   text-decoration: line-through;
