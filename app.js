@@ -392,6 +392,13 @@
 
       li.classList.add('editing');
 
+      // Disable the Edit button while editing to prevent confusion /
+      // accidental re-triggering of the edit flow.
+      var editBtn = li.querySelector('.edit-btn');
+      if (editBtn) {
+        editBtn.disabled = true;
+      }
+
       var textSpan = li.querySelector('.todo-text');
       var currentText = textSpan.textContent;
 
@@ -420,6 +427,11 @@
         isFinished = true;
 
         li.classList.remove('editing');
+
+        // Re-enable the Edit button now that editing is finished
+        if (editBtn) {
+          editBtn.disabled = false;
+        }
 
         // Restore the text span
         li.replaceChild(textSpan, editInput);

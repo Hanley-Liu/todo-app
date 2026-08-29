@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Context-aware empty state: shows "No todos yet" when the list is truly empty, vs "No matching todos" when the current filter hides all items (prevents user confusion when filtering)
 - "Clear completed" button now auto-hides when there are no completed todos, reducing visual clutter
 - Inline edit input now selects all text on focus, so users can immediately type to replace the existing content instead of manually clearing first
+- Edit button now disables while a todo is being edited, preventing accidental double-initiation of the edit flow; re-enables on save/cancel/blur with visual `opacity` + `not-allowed` cursor feedback
 
 ### Fixed
 - `clearCompleted` returned the same array reference when no completed todos existed, violating its documented 'Pure: does not mutate the input array' contract and being inconsistent with `filterTodos` (which always returns a new array); now always returns a new array reference via `filter`, ensuring immutability guarantees hold for all callers
