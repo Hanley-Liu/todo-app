@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - `filterTodos` now returns a new array reference for the 'all' filter (previously returned the same array reference, inconsistent with 'active'/'completed' branches that always return copies — could cause subtle mutation bugs in callers expecting immutability)
+- Mismatched parenthesis in `README.zh-CN.md` test breakdown: `filterTodos` entry used a full-width opening `（` but a regular ASCII closing `)`, producing `(7 测试)` instead of `（7 测试）`; corrected to consistent full-width parentheses matching all other entries
 
 ### Added
 - Keyboard focus indicators (`:focus-visible`) on all interactive elements (buttons, checkboxes, inputs) for WCAG-compliant keyboard navigation

@@ -97,7 +97,7 @@ node tests/app.test.js
 - `toggleTodo` — 完成状态切换（6 测试）
 - `deleteTodo` — 删除、不可变性（5 测试）
 - `editTodo` — 编辑、去除首尾空格、无效输入拒绝（9 测试）
-- `filterTodos` — 全部/活跃/已完成过滤（7 测试)
+- `filterTodos` — 全部/活跃/已完成过滤（7 测试）
 - `clearCompleted` — 批量移除、不可变性（5 测试）
 - `isValidTodo` — 类型与结构校验（8 测试）
 - `sanitizeTodos` — 数组过滤（4 测试）
