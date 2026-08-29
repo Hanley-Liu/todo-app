@@ -139,12 +139,6 @@
    * @returns {Todo[]} New state with only incomplete todos
    */
   function clearCompleted(todos) {
-    var hasCompleted = todos.some(function (todo) {
-      return todo.completed;
-    });
-    if (!hasCompleted) {
-      return todos;
-    }
     return todos.filter(function (todo) {
       return !todo.completed;
     });

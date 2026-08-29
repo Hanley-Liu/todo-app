@@ -35,7 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Inline edit input now selects all text on focus, so users can immediately type to replace the existing content instead of manually clearing first
 
 ### Fixed
-- `clearCompleted` always returned a new array reference even when no completed todos existed, causing unnecessary re-renders; now returns the same reference when there is nothing to clear (consistent with `addTodo` and `editTodo` early-return behavior)
+- `clearCompleted` returned the same array reference when no completed todos existed, violating its documented 'Pure: does not mutate the input array' contract and being inconsistent with `filterTodos` (which always returns a new array); now always returns a new array reference via `filter`, ensuring immutability guarantees hold for all callers
 - "Clear completed" button visibility was not updated after add, toggle, delete, or clear-completed operations — only updated during inline edit — so the button stayed hidden when it should have been visible (and vice versa); now `updateClearCompletedButton` is called after every state mutation and on initial render
 - Inline editing double-fire bug: pressing Escape (or Enter) during edit triggered `finishEdit` from both the `keydown` and subsequent `blur` event, causing a DOM `NotFoundError` because `editInput` had already been replaced by `textSpan` — added an `isFinished` guard flag to ensure `finishEdit` runs exactly once per edit session
 - Test suite crashed on load: mock `document` was missing `getElementById` and `readyState`, causing `init()` to throw `TypeError` before any tests could run
@@ -45,7 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Strikethrough test asserted `completed` class on `.todo-text` span instead of the `.todo-item` li (CSS applies strikethrough via descendant selector)
 - `editTodo` immutability test used a fresh array literal `[t1]` in the assertion `result !== [t1]`, which is always true and never verified the function returns a new array reference; corrected to compare against the original input array reference
 - `editTodo` empty/whitespace-input tests used `assertDeepEqual` (JSON equality) to verify the same array was returned, which cannot distinguish between a new array with identical contents and the original reference; switched to `assertEqual` (reference equality) to actually verify the documented early-return behavior
-- `clearCompleted` "returns same array" test only checked `result.length` and did not verify reference equality, so it could not detect a regression where a new array is returned unnecessarily; added `assertEqual(result, todos, ...)` reference check
+- `clearCompleted` test asserted the same-array-reference behavior (the bug); updated to verify a new array reference is returned (`assertNotEqual`), enforcing the immutability contract; added `assertNotEqual` helper to the test runner
 
 ## [1.0.0] - 2026-08-25
 

@@ -157,6 +157,16 @@
     }
   }
 
+  function assertNotEqual(actual, expected, msg) {
+    if (actual === expected) {
+      throw new Error(
+        (msg || 'assertNotEqual') +
+          ': expected not ' + JSON.stringify(expected) +
+          ', got ' + JSON.stringify(actual)
+      );
+    }
+  }
+
   function assertDeepEqual(actual, expected, msg) {
     if (JSON.stringify(actual) !== JSON.stringify(expected)) {
       throw new Error(
@@ -661,11 +671,11 @@
     assertEqual(result[0].text, 'B', 'correct item kept');
   });
 
-  test('returns same array reference when no todos are completed', function () {
+  test('returns new array reference when no todos are completed', function () {
     var todos = [app.createTodo('A'), app.createTodo('B')];
     var result = app.clearCompleted(todos);
     assertEqual(result.length, 2, 'all kept');
-    assertEqual(result, todos, 'same array reference returned');
+    assertNotEqual(result, todos, 'new array reference returned');
   });
 
   test('returns empty array when all todos are completed', function () {
