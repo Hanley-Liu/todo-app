@@ -1203,6 +1203,38 @@
     assertEqual(btn.textContent, 'Clear completed (2)', 'button text shows total count when all completed');
   });
 
+  // --- updateFilterBar ---
+  suite('updateFilterBar');
+
+  test('hides filter bar when todo list is empty', function () {
+    var filterBar = createMockButtonWithClass();
+    app.updateFilterBar([], filterBar);
+    assertTrue(filterBar.classList.contains('hidden'), 'filter bar hidden when no todos');
+  });
+
+  test('shows filter bar when there are incomplete todos', function () {
+    var todos = [app.createTodo('Task 1')];
+    var filterBar = createMockButtonWithClass();
+    app.updateFilterBar(todos, filterBar);
+    assertFalse(filterBar.classList.contains('hidden'), 'filter bar visible when todos exist');
+  });
+
+  test('shows filter bar when there are completed todos', function () {
+    var todos = [app.createTodo('Task 1')];
+    todos[0].completed = true;
+    var filterBar = createMockButtonWithClass();
+    app.updateFilterBar(todos, filterBar);
+    assertFalse(filterBar.classList.contains('hidden'), 'filter bar visible when only completed todos');
+  });
+
+  test('shows filter bar when there is a mix of completed and incomplete todos', function () {
+    var todos = [app.createTodo('Task 1'), app.createTodo('Task 2')];
+    todos[0].completed = true;
+    var filterBar = createMockButtonWithClass();
+    app.updateFilterBar(todos, filterBar);
+    assertFalse(filterBar.classList.contains('hidden'), 'filter bar visible with mixed todos');
+  });
+
   // --- Context-aware empty state ---
   suite('render (empty state)');
 

@@ -363,6 +363,22 @@
     }
   }
 
+  /**
+   * Shows or hides the filter bar based on whether there are any todos.
+   * When the list is empty, the filter buttons ("All", "Active", "Completed")
+   * and the "Clear completed" button are hidden to avoid presenting
+   * meaningless controls to the user.
+   * @param {Todo[]} todos — The full state
+   * @param {HTMLElement} filterBar
+   */
+  function updateFilterBar(todos, filterBar) {
+    if (todos.length === 0) {
+      filterBar.classList.add('hidden');
+    } else {
+      filterBar.classList.remove('hidden');
+    }
+  }
+
   // ---------------------------------------------------------------------------
   // App Initialization (DOM-dependent — only runs in browser)
   // ---------------------------------------------------------------------------
@@ -443,6 +459,7 @@
             saveToLocalStorage(todos);
             render(todos, currentFilter, list, emptyState);
             updateClearCompletedButton(todos, clearCompletedBtn);
+            updateFilterBar(todos, filterBar);
           }
         }
 
@@ -468,6 +485,7 @@
     // Initial render
     render(todos, currentFilter, list, emptyState);
     updateClearCompletedButton(todos, clearCompletedBtn);
+    updateFilterBar(todos, filterBar);
 
     // --- Input validation: toggle Add button on every keystroke ---
     input.addEventListener('input', function () {
@@ -487,6 +505,7 @@
       saveToLocalStorage(todos);
       render(todos, currentFilter, list, emptyState);
       updateClearCompletedButton(todos, clearCompletedBtn);
+      updateFilterBar(todos, filterBar);
 
       input.value = '';
       addBtn.disabled = true;
@@ -505,6 +524,7 @@
         saveToLocalStorage(todos);
         render(todos, currentFilter, list, emptyState);
         updateClearCompletedButton(todos, clearCompletedBtn);
+        updateFilterBar(todos, filterBar);
       }
 
       if (e.target.classList.contains('edit-btn')) {
@@ -516,6 +536,7 @@
         saveToLocalStorage(todos);
         render(todos, currentFilter, list, emptyState);
         updateClearCompletedButton(todos, clearCompletedBtn);
+        updateFilterBar(todos, filterBar);
       }
     });
 
@@ -538,6 +559,7 @@
       saveToLocalStorage(todos);
       render(todos, currentFilter, list, emptyState);
       updateClearCompletedButton(todos, clearCompletedBtn);
+      updateFilterBar(todos, filterBar);
     });
   }
 
@@ -574,6 +596,7 @@
       render: render,
       updateAddButton: updateAddButton,
       updateClearCompletedButton: updateClearCompletedButton,
+      updateFilterBar: updateFilterBar,
     };
   }
 })();
