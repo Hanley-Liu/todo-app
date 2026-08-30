@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `updateFilterBar` function: hides the filter bar (All/Active/Completed buttons + Clear completed) when the todo list is empty, preventing confusing controls when there's nothing to filter
+- 4 new tests for `updateFilterBar` covering empty list, incomplete-only, completed-only, and mixed todo states
+
+### Changed
+- Updated README.md and README.zh-CN.md test count from 102 to 106 (added `updateFilterBar` suite)
+- Updated README.md and README.zh-CN.md test breakdown to include `updateFilterBar` suite (4 tests)
+
 ### Fixed
 - `CONTRIBUTING.md` stated "All **102 tests** should pass" but the actual test suite contains 106 tests; corrected to 106 to match reality
 
