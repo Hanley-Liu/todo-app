@@ -3,7 +3,7 @@
 > A lightweight, zero-dependency todo list web app with localStorage persistence — add, complete, delete, edit, and filter tasks in a clean, responsive interface.
 
 [![License: MIT](https://img.shields.io/github/license/Hanley-Liu/todo-app?color=blue&style=flat)](LICENSE)
-[![Tests: 112 passing](https://img.shields.io/badge/Tests-106%20passing-brightgreen?style=flat)](tests/app.test.js)
+[![Tests: 112 passing](https://img.shields.io/badge/Tests-112%20passing-brightgreen?style=flat)](tests/app.test.js)
 [![CI](https://img.shields.io/github/actions/workflow/Hanley-Liu/todo-app/ci.yml?branch=main&label=CI&style=flat)](.github/workflows/ci.yml)
 [![GitHub Stars](https://img.shields.io/github/stars/Hanley-Liu/todo-app?style=flat&color=gold)](https://github.com/Hanley-Liu/todo-app/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/Hanley-Liu/todo-app?style=flat&color=lightgrey)](https://github.com/Hanley-Liu/todo-app/network)

@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `CONTRIBUTING.md` stated "All **102 tests** should pass" but the actual test suite contains 106 tests; corrected to 106 to match reality
 - UX gap: after clearing completed todos while on the 'completed' filter, or toggling the last active todo while on the 'active' filter, the user was left staring at a "No matching todos" empty state with no way to see their remaining todos without manually switching filters; `adjustFilterIfNeeded` now auto-switches to 'all' in these scenarios
+- Test count badge in README.md and README.zh-CN.md displayed "106 passing" but the actual test suite contains 112 tests; corrected the badge URL to reflect the accurate count
 
 ### Added
 - `updateFilterBar` function: hides the filter bar (All/Active/Completed buttons + Clear completed) when the todo list is empty, preventing confusing controls when there's nothing to filter
