@@ -24,7 +24,7 @@ This project uses a zero-dependency test runner. No `npm install` is required.
 node tests/app.test.js
 ```
 
-All **106 tests** should pass before submitting a pull request.
+All **112 tests** should pass before submitting a pull request.
 
 ## Coding Guidelines
 

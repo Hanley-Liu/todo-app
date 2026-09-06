@@ -10,13 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `updateFilterBar` function: hides the filter bar (All/Active/Completed buttons + Clear completed) when the todo list is empty, preventing confusing controls when there's nothing to filter
 - 4 new tests for `updateFilterBar` covering empty list, incomplete-only, completed-only, and mixed todo states
+- `adjustFilterIfNeeded` function: auto-switches the active filter to 'all' when the current filter ('active' or 'completed') would show zero todos, preventing users from being stranded on an empty filter view after toggling, deleting, or clearing completed todos
+- 6 new tests for `adjustFilterIfNeeded` covering auto-switch on empty active/completed filter, no-op when 'all', no-op when todos exist, and auto-switch when no todos exist
 
 ### Changed
 - Updated README.md and README.zh-CN.md test count from 102 to 106 (added `updateFilterBar` suite)
 - Updated README.md and README.zh-CN.md test breakdown to include `updateFilterBar` suite (4 tests)
+- Updated README.md, README.zh-CN.md, and CONTRIBUTING.md test count from 106 to 112 (added `adjustFilterIfNeeded` suite)
+- Updated README.md test breakdown to include `adjustFilterIfNeeded` suite (6 tests)
+- Refactored `init()` to use a `refreshView()` helper that centralizes render + button updates + auto-filter adjustment, replacing duplicated render/updateClearCompletedButton/updateFilterBar call sequences
 
 ### Fixed
 - `CONTRIBUTING.md` stated "All **102 tests** should pass" but the actual test suite contains 106 tests; corrected to 106 to match reality
+- UX gap: after clearing completed todos while on the 'completed' filter, or toggling the last active todo while on the 'active' filter, the user was left staring at a "No matching todos" empty state with no way to see their remaining todos without manually switching filters; `adjustFilterIfNeeded` now auto-switches to 'all' in these scenarios
 
 ### Added
 - `updateFilterBar` function: hides the filter bar (All/Active/Completed buttons + Clear completed) when the todo list is empty, preventing confusing controls when there's nothing to filter

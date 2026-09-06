@@ -379,6 +379,21 @@
     }
   }
 
+  /**
+   * Auto-switches the active filter to 'all' when the current filter
+   * would show zero todos, preventing the user from being stranded on
+   * an empty filter view after toggling, deleting, or clearing.
+   * @param {Todo[]} todos — The full state
+   * @param {string} filter — Current active filter
+   * @returns {string} The filter to use (may be 'all' if auto-switched)
+   */
+  function adjustFilterIfNeeded(todos, filter) {
+    if (filter !== 'all' && filterTodos(todos, filter).length === 0) {
+      return 'all';
+    }
+    return filter;
+  }
+
   // ---------------------------------------------------------------------------
   // App Initialization (DOM-dependent — only runs in browser)
   // ---------------------------------------------------------------------------
@@ -400,6 +415,15 @@
     // Load persisted state (or empty array if unavailable)
     var todos = loadFromLocalStorage();
     var currentFilter = 'all';
+
+    // Re-renders the list, auto-switching to 'all' filter if the
+    // current filter would show zero todos.
+    function refreshView() {
+      currentFilter = adjustFilterIfNeeded(todos, currentFilter);
+      render(todos, currentFilter, list, emptyState);
+      updateClearCompletedButton(todos, clearCompletedBtn);
+      updateFilterBar(todos, filterBar);
+    }
 
     // --- Inline editing ---
     function startEditTodo(li, id) {
@@ -483,9 +507,7 @@
     }
 
     // Initial render
-    render(todos, currentFilter, list, emptyState);
-    updateClearCompletedButton(todos, clearCompletedBtn);
-    updateFilterBar(todos, filterBar);
+    refreshView();
 
     // --- Input validation: toggle Add button on every keystroke ---
     input.addEventListener('input', function () {
@@ -503,9 +525,7 @@
 
       todos = addTodo(todos, input.value);
       saveToLocalStorage(todos);
-      render(todos, currentFilter, list, emptyState);
-      updateClearCompletedButton(todos, clearCompletedBtn);
-      updateFilterBar(todos, filterBar);
+      refreshView();
 
       input.value = '';
       addBtn.disabled = true;
@@ -550,6 +570,8 @@
           btn.classList.toggle('active', btn === e.target);
         });
         render(todos, currentFilter, list, emptyState);
+        updateClearCompletedButton(todos, clearCompletedBtn);
+        updateFilterBar(todos, filterBar);
       }
     });
 
@@ -557,9 +579,7 @@
     clearCompletedBtn.addEventListener('click', function () {
       todos = clearCompleted(todos);
       saveToLocalStorage(todos);
-      render(todos, currentFilter, list, emptyState);
-      updateClearCompletedButton(todos, clearCompletedBtn);
-      updateFilterBar(todos, filterBar);
+      refreshView();
     });
   }
 
@@ -597,6 +617,7 @@
       updateAddButton: updateAddButton,
       updateClearCompletedButton: updateClearCompletedButton,
       updateFilterBar: updateFilterBar,
+      adjustFilterIfNeeded: adjustFilterIfNeeded,
     };
   }
 })();

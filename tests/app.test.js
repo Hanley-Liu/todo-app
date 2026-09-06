@@ -1235,6 +1235,41 @@
     assertFalse(filterBar.classList.contains('hidden'), 'filter bar visible with mixed todos');
   });
 
+  // --- adjustFilterIfNeeded ---
+  suite('adjustFilterIfNeeded');
+
+  test('returns "all" when on "active" filter and no active todos remain', function () {
+    var todos = [app.createTodo('Task 1')];
+    todos[0].completed = true;
+    assertEqual(app.adjustFilterIfNeeded(todos, 'active'), 'all', 'switches to all');
+  });
+
+  test('returns "all" when on "completed" filter and no completed todos remain', function () {
+    var todos = [app.createTodo('Task 1')];
+    assertEqual(app.adjustFilterIfNeeded(todos, 'completed'), 'all', 'switches to all');
+  });
+
+  test('keeps "all" filter unchanged', function () {
+    var todos = [app.createTodo('Task 1')];
+    assertEqual(app.adjustFilterIfNeeded(todos, 'all'), 'all', 'stays all');
+  });
+
+  test('keeps "active" filter when active todos exist', function () {
+    var todos = [app.createTodo('Task 1')];
+    assertEqual(app.adjustFilterIfNeeded(todos, 'active'), 'active', 'stays active');
+  });
+
+  test('keeps "completed" filter when completed todos exist', function () {
+    var todos = [app.createTodo('Task 1')];
+    todos[0].completed = true;
+    assertEqual(app.adjustFilterIfNeeded(todos, 'completed'), 'completed', 'stays completed');
+  });
+
+  test('switches to "all" when no todos exist and filter is not "all"', function () {
+    assertEqual(app.adjustFilterIfNeeded([], 'active'), 'all', 'switches to all when empty');
+    assertEqual(app.adjustFilterIfNeeded([], 'completed'), 'all', 'switches to all when empty');
+  });
+
   // --- Context-aware empty state ---
   suite('render (empty state)');
 
