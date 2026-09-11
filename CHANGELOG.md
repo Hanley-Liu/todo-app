@@ -33,6 +33,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated README.md and README.zh-CN.md test count from 102 to 106 (added `updateFilterBar` suite)
 - Updated README.md and README.zh-CN.md test breakdown to include `updateFilterBar` suite (4 tests)
 
+### Fixed
+- README.zh-CN.md test breakdown was missing the `adjustFilterIfNeeded` suite entry (6 tests), creating an inconsistency with the English README and the actual 19-suite/112-test suite; added the missing entry
+
 ### Added
 - Visual feedback for editing state: `.todo-item.editing` now has a distinct blue-tinted background and border to clearly indicate which todo is being edited
 
