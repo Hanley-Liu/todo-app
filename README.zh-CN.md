@@ -110,6 +110,7 @@ node tests/app.test.js
 - `updateAddButton` — 添加按钮启用/禁用状态（4 测试）
 - `updateClearCompletedButton` — 清除已完成按钮可见性（6 测试）
 - `updateFilterBar` — 筛选栏可见性（4 测试）
+- `adjustFilterIfNeeded` — 当前筛选为空时自动切换到「全部」（6 测试）
 - `render (empty state)` — 空状态消息（4 测试）
 
 成功退出码为 `0`，失败为 `1`，便于集成到 CI 流水线。
