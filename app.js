@@ -481,9 +481,7 @@
           if (trimmed !== currentText) {
             todos = editTodo(todos, id, trimmed);
             saveToLocalStorage(todos);
-            render(todos, currentFilter, list, emptyState);
-            updateClearCompletedButton(todos, clearCompletedBtn);
-            updateFilterBar(todos, filterBar);
+            refreshView();
           }
         }
 
@@ -542,9 +540,7 @@
       if (e.target.classList.contains('todo-checkbox')) {
         todos = toggleTodo(todos, id);
         saveToLocalStorage(todos);
-        render(todos, currentFilter, list, emptyState);
-        updateClearCompletedButton(todos, clearCompletedBtn);
-        updateFilterBar(todos, filterBar);
+        refreshView();
       }
 
       if (e.target.classList.contains('edit-btn')) {
@@ -554,9 +550,7 @@
       if (e.target.classList.contains('delete-btn')) {
         todos = deleteTodo(todos, id);
         saveToLocalStorage(todos);
-        render(todos, currentFilter, list, emptyState);
-        updateClearCompletedButton(todos, clearCompletedBtn);
-        updateFilterBar(todos, filterBar);
+        refreshView();
       }
     });
 

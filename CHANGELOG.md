@@ -22,9 +22,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - `CONTRIBUTING.md` stated "All **102 tests** should pass" but the actual test suite contains 106 tests; corrected to 106 to match reality
-- UX gap: after clearing completed todos while on the 'completed' filter, or toggling the last active todo while on the 'active' filter, the user was left staring at a "No matching todos" empty state with no way to see their remaining todos without manually switching filters; `adjustFilterIfNeeded` now auto-switches to 'all' in these scenarios
+- Correctness bug: the toggle-complete, delete, and inline-edit event handlers called `render` + `updateClearCompletedButton` + `updateFilterBar` directly instead of going through the `refreshView()` helper, so `adjustFilterIfNeeded` was never invoked for these actions — toggling the last active todo while on the 'active' filter, deleting the last visible todo, or editing a todo could leave the user stranded on a 'No matching todos' empty state with no auto-switch to 'all'; replaced the duplicated render/update call sequences in all three handlers with `refreshView()` so the auto-filter-switch now works consistently across add, toggle, delete, edit, and clear-completed
 - Test count badge in README.md and README.zh-CN.md displayed "106 passing" but the actual test suite contains 112 tests; corrected the badge URL to reflect the accurate count
-- README.zh-CN.md test breakdown was missing the `adjustFilterIfNeeded` suite entry (6 tests), creating an inconsistency with the English README and the actual 19-suite/112-test suite; added the missing entry
+- README.zh-CN.md test breakdown was missing the `adjustFilterIfNeeded` suite entry (6 tests), creating an inconsistency with the English README and the actual 21-suite/112-test suite; added the missing entry
 
 ### Added
 - Visual feedback for editing state: `.todo-item.editing` now has a distinct blue-tinted background and border to clearly indicate which todo is being edited
@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `filterTodos` now returns a new array reference for the 'all' filter (previously returned the same array reference, inconsistent with 'active'/'completed' branches that always return copies — could cause subtle mutation bugs in callers expecting immutability)
 - Mismatched parenthesis in `README.zh-CN.md` test breakdown: `filterTodos` entry used a full-width opening `（` but a regular ASCII closing `)`, producing `(7 测试)` instead of `（7 测试）`; corrected to consistent full-width parentheses matching all other entries
+- CHANGELOG.md stated "19 suites" in two entries but the test suite actually contains 21 suites (verified via `count_tests.js`); corrected both occurrences to "21 suites"
 
 ### Added
 - Keyboard focus indicators (`:focus-visible`) on all interactive elements (buttons, checkboxes, inputs) for WCAG-compliant keyboard navigation
@@ -85,4 +86,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Test count inconsistency across documentation: README.md body text and project tree said "72 tests" while the badge and actual test suite reported 101; README.zh-CN.md badge said "72 passing" while body text said "72"; CONTRIBUTING.md said "72 tests" — all references now consistently state 101 tests
-- README.md and README.zh-CN.md test breakdown listed incorrect per-suite test counts (e.g. `addTodo` 6→7, `editTodo` 5→9, `toggleTodo` 5→6, `filterTodos` 5→6, `clearCompleted` 4→5, `saveToLocalStorage` 4→5) and omitted six suites entirely (`generateId`, `createTodoElement`, `render`, `updateAddButton`, `updateClearCompletedButton`, `render (empty state)`); both READMEs now list all 19 suites with accurate counts
+- README.md and README.zh-CN.md test breakdown listed incorrect per-suite test counts (e.g. `addTodo` 6→7, `editTodo` 5→9, `toggleTodo` 5→6, `filterTodos` 5→6, `clearCompleted` 4→5, `saveToLocalStorage` 4→5) and omitted six suites entirely (`generateId`, `createTodoElement`, `render`, `updateAddButton`, `updateClearCompletedButton`, `render (empty state)`); both READMEs now list all 21 suites with accurate counts
