@@ -1061,8 +1061,7 @@
   test('does not apply strikethrough class when todo is incomplete', function () {
     var todo = app.createTodo('Task');
     var li = app.createTodoElement(todo);
-    var textSpan = li.querySelector('.todo-text');
-    assertFalse(textSpan.classList.contains('completed'), 'no completed class');
+    assertFalse(li.classList.contains('completed'), 'li has no completed class');
   });
 
   // --- render ---

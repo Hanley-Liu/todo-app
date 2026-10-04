@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Visual feedback for editing state: `.todo-item.editing` now has a distinct blue-tinted background and border to clearly indicate which todo is being edited
 
 ### Fixed
+- Broken test: "does not apply strikethrough class when todo is incomplete" checked `classList.contains('completed')` on the `.todo-text` span instead of the `.todo-item` li — the `completed` class is applied to the `li` (CSS applies strikethrough via descendant selector), so the assertion always passed (false positive) regardless of whether the class was actually applied; corrected to check `li.classList.contains('completed')`, which now properly fails if the implementation breaks
 - `filterTodos` now returns a new array reference for the 'all' filter (previously returned the same array reference, inconsistent with 'active'/'completed' branches that always return copies — could cause subtle mutation bugs in callers expecting immutability)
 - Mismatched parenthesis in `README.zh-CN.md` test breakdown: `filterTodos` entry used a full-width opening `（` but a regular ASCII closing `)`, producing `(7 测试)` instead of `（7 测试）`; corrected to consistent full-width parentheses matching all other entries
 - CHANGELOG.md stated "19 suites" in two entries but the test suite actually contains 21 suites (verified via `count_tests.js`); corrected both occurrences to "21 suites"
