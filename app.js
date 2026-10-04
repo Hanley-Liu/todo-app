@@ -563,9 +563,7 @@
         buttons.forEach(function (btn) {
           btn.classList.toggle('active', btn === e.target);
         });
-        render(todos, currentFilter, list, emptyState);
-        updateClearCompletedButton(todos, clearCompletedBtn);
-        updateFilterBar(todos, filterBar);
+        refreshView();
       }
     });
 
