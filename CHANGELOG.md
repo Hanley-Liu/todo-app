@@ -38,6 +38,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Keyboard focus indicators (`:focus-visible`) on all interactive elements (buttons, checkboxes, inputs) for WCAG-compliant keyboard navigation
 - `prefers-reduced-motion` media query to disable CSS transitions/animations for users who request reduced motion
+- Focus management: after deleting a todo or clearing all completed todos, focus is automatically returned to the text input field, improving keyboard navigation flow and preventing focus from being lost
+
+### Fixed
+- Focus trap after delete/clear-completed: previously, deleting a todo or clearing completed todos removed DOM elements without returning focus to the input, leaving keyboard users with no clear focus target; now `input.focus()` is called after both actions
 
 ### Changed
 - Replaced empty no-op CSS rule (`.todo-form input:disabled, .todo-form button:disabled`) with meaningful focus-visible styles

@@ -551,6 +551,7 @@
         todos = deleteTodo(todos, id);
         saveToLocalStorage(todos);
         refreshView();
+        input.focus();
       }
     });
 
@@ -572,6 +573,7 @@
       todos = clearCompleted(todos);
       saveToLocalStorage(todos);
       refreshView();
+      input.focus();
     });
   }
 
