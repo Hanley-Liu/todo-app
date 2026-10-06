@@ -1269,6 +1269,10 @@
     assertEqual(app.adjustFilterIfNeeded([], 'completed'), 'all', 'switches to all when empty');
   });
 
+  test('returns "all" unchanged when already on "all" and no todos exist', function () {
+    assertEqual(app.adjustFilterIfNeeded([], 'all'), 'all', 'stays all when empty');
+  });
+
   // --- Context-aware empty state ---
   suite('render (empty state)');
 

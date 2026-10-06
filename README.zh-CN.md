@@ -3,7 +3,7 @@
 > 一款轻量、零依赖的待办事项网页应用，基于 localStorage 持久化保存 — 添加、完成和删除任务，拥有干净且响应式的界面。
 
 [![License: MIT](https://img.shields.io/github/license/Hanley-Liu/todo-app?color=blue&style=flat)](LICENSE)
-[![Tests: 112 passing](https://img.shields.io/badge/Tests-112%20passing-brightgreen?style=flat)](tests/app.test.js)
+[![Tests: 113 passing](https://img.shields.io/badge/Tests-113%20passing-brightgreen?style=flat)](tests/app.test.js)
 [![CI](https://img.shields.io/github/actions/workflow/Hanley-Liu/todo-app/ci.yml?branch=main&label=CI&style=flat)](.github/workflows/ci.yml)
 [![GitHub Stars](https://img.shields.io/github/stars/Hanley-Liu/todo-app?style=flat&color=gold)](https://github.com/Hanley-Liu/todo-app/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/Hanley-Liu/todo-app?style=flat&color=lightgrey)](https://github.com/Hanley-Liu/todo-app/network)
@@ -89,7 +89,7 @@ npx serve .
 node tests/app.test.js
 ```
 
-共计 **112 个测试**，覆盖范围包括：
+共计 **113 个测试**，覆盖范围包括：
 
 - `hasValidInput` — 输入校验（6 测试）
 - `createTodo` — 待办创建与 ID 生成（3 测试）
@@ -110,7 +110,7 @@ node tests/app.test.js
 - `updateAddButton` — 添加按钮启用/禁用状态（4 测试）
 - `updateClearCompletedButton` — 清除已完成按钮可见性（6 测试）
 - `updateFilterBar` — 筛选栏可见性（4 测试）
-- `adjustFilterIfNeeded` — 当前筛选为空时自动切换到「全部」（6 测试）
+- `adjustFilterIfNeeded` — 当前筛选为空时自动切换到「全部」（7 测试）
 - `render (empty state)` — 空状态消息（4 测试）
 
 成功退出码为 `0`，失败为 `1`，便于集成到 CI 流水线。
@@ -125,7 +125,7 @@ todo-app/
 ├── style.css               # 全部样式及响应式布局
 ├── app.js                  # 核心逻辑（纯函数 + DOM + 持久化）
 ├── tests/
-│   └── app.test.js         # 零依赖单元测试套件（112 个测试）
+│   └── app.test.js         # 零依赖单元测试套件（113 个测试）
 ├── discussion/
 │   ├── product-requirements.md
 │   ├── architecture.md
