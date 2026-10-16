@@ -11,20 +11,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `updateFilterBar` function: hides the filter bar (All/Active/Completed buttons + Clear completed) when the todo list is empty, preventing confusing controls when there's nothing to filter
 - 4 new tests for `updateFilterBar` covering empty list, incomplete-only, completed-only, and mixed todo states
 - `adjustFilterIfNeeded` function: auto-switches the active filter to 'all' when the current filter ('active' or 'completed') would show zero todos, preventing users from being stranded on an empty filter view after toggling, deleting, or clearing completed todos
-- 6 new tests for `adjustFilterIfNeeded` covering auto-switch on empty active/completed filter, no-op when 'all', no-op when todos exist, and auto-switch when no todos exist
+- 7 new tests for `adjustFilterIfNeeded` covering auto-switch on empty active/completed filter, no-op when 'all', no-op when todos exist, and auto-switch when no todos exist
 
 ### Changed
 - Updated README.md and README.zh-CN.md test count from 102 to 106 (added `updateFilterBar` suite)
 - Updated README.md and README.zh-CN.md test breakdown to include `updateFilterBar` suite (4 tests)
 - Updated README.md, README.zh-CN.md, and CONTRIBUTING.md test count from 106 to 112 (added `adjustFilterIfNeeded` suite)
-- Updated README.md test breakdown to include `adjustFilterIfNeeded` suite (6 tests)
+- Updated README.md test breakdown to include `adjustFilterIfNeeded` suite (7 tests)
 - Refactored `init()` to use a `refreshView()` helper that centralizes render + button updates + auto-filter adjustment, replacing duplicated render/updateClearCompletedButton/updateFilterBar call sequences
 
 ### Fixed
+- `CONTRIBUTING.md` stated "All **112 tests** should pass" but the actual test suite contains 113 tests (the `render (empty state)` suite was added after the last count update); corrected to 113 to match reality
 - `CONTRIBUTING.md` stated "All **102 tests** should pass" but the actual test suite contains 106 tests; corrected to 106 to match reality
 - Correctness bug: the toggle-complete, delete, and inline-edit event handlers called `render` + `updateClearCompletedButton` + `updateFilterBar` directly instead of going through the `refreshView()` helper, so `adjustFilterIfNeeded` was never invoked for these actions — toggling the last active todo while on the 'active' filter, deleting the last visible todo, or editing a todo could leave the user stranded on a 'No matching todos' empty state with no auto-switch to 'all'; replaced the duplicated render/update call sequences in all three handlers with `refreshView()` so the auto-filter-switch now works consistently across add, toggle, delete, edit, and clear-completed
 - Test count badge in README.md and README.zh-CN.md displayed "106 passing" but the actual test suite contains 112 tests; corrected the badge URL to reflect the accurate count
-- README.zh-CN.md test breakdown was missing the `adjustFilterIfNeeded` suite entry (6 tests), creating an inconsistency with the English README and the actual 21-suite/112-test suite; added the missing entry
+- README.zh-CN.md test breakdown was missing the `adjustFilterIfNeeded` suite entry (7 tests), creating an inconsistency with the English README and the actual 21-suite/113-test suite; added the missing entry
 
 ### Added
 - Visual feedback for editing state: `.todo-item.editing` now has a distinct blue-tinted background and border to clearly indicate which todo is being edited
@@ -34,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `filterTodos` now returns a new array reference for the 'all' filter (previously returned the same array reference, inconsistent with 'active'/'completed' branches that always return copies — could cause subtle mutation bugs in callers expecting immutability)
 - Mismatched parenthesis in `README.zh-CN.md` test breakdown: `filterTodos` entry used a full-width opening `（` but a regular ASCII closing `)`, producing `(7 测试)` instead of `（7 测试）`; corrected to consistent full-width parentheses matching all other entries
 - CHANGELOG.md stated "19 suites" in two entries but the test suite actually contains 21 suites (verified via `count_tests.js`); corrected both occurrences to "21 suites"
+- CHANGELOG.md stated `adjustFilterIfNeeded` suite has 6 tests in two entries (lines 14 and 20), but the actual test suite contains 7 tests (verified via `count_tests.js`); corrected both occurrences to 7 tests for consistency with README.md, README.zh-CN.md, and the actual test suite
 
 ### Added
 - Keyboard focus indicators (`:focus-visible`) on all interactive elements (buttons, checkboxes, inputs) for WCAG-compliant keyboard navigation
