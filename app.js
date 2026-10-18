@@ -394,6 +394,20 @@
     return filter;
   }
 
+  /**
+   * Syncs the 'active' class on all filter buttons so the UI reflects
+   * the currently active filter. Always called after any filter change
+   * (whether auto-switched or user-initiated) to keep the buttons in sync.
+   * @param {string} filter — The active filter
+   * @param {HTMLElement} filterBar — The filter bar container
+   */
+  function syncFilterButtons(filter, filterBar) {
+    var buttons = filterBar.querySelectorAll('.filter-btn');
+    buttons.forEach(function (btn) {
+      btn.classList.toggle('active', btn.dataset.filter === filter);
+    });
+  }
+
   // ---------------------------------------------------------------------------
   // App Initialization (DOM-dependent — only runs in browser)
   // ---------------------------------------------------------------------------
@@ -418,19 +432,14 @@
 
     // Re-renders the list, auto-switching to 'all' filter if the
     // current filter would show zero todos. Also syncs the active
-    // class on filter buttons so the UI reflects any auto-switch.
+    // class on filter buttons so the UI reflects any filter change.
     function refreshView() {
       var prevFilter = currentFilter;
       currentFilter = adjustFilterIfNeeded(todos, currentFilter);
-      // If the filter was auto-switched (e.g. 'active' → 'all'),
-      // update the active class on the filter buttons so the UI
-      // matches the actual active filter.
-      if (currentFilter !== prevFilter) {
-        var buttons = filterBar.querySelectorAll('.filter-btn');
-        buttons.forEach(function (btn) {
-          btn.classList.toggle('active', btn.dataset.filter === currentFilter);
-        });
-      }
+      // Always sync the active class on filter buttons so the UI
+      // matches the actual active filter — whether it was auto-switched
+      // (e.g. 'active' → 'all') or set directly by a user click.
+      syncFilterButtons(currentFilter, filterBar);
       render(todos, currentFilter, list, emptyState);
       updateClearCompletedButton(todos, clearCompletedBtn);
       updateFilterBar(todos, filterBar);
@@ -621,6 +630,7 @@
       updateClearCompletedButton: updateClearCompletedButton,
       updateFilterBar: updateFilterBar,
       adjustFilterIfNeeded: adjustFilterIfNeeded,
+      syncFilterButtons: syncFilterButtons,
     };
   }
 })();

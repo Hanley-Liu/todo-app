@@ -3,7 +3,7 @@
 > A lightweight, zero-dependency todo list web app with localStorage persistence — add, complete, delete, edit, and filter tasks in a clean, responsive interface.
 
 [![License: MIT](https://img.shields.io/github/license/Hanley-Liu/todo-app?color=blue&style=flat)](LICENSE)
-[![Tests: 113 passing](https://img.shields.io/badge/Tests-113%20passing-brightgreen?style=flat)](tests/app.test.js)
+[![Tests: 116 passing](https://img.shields.io/badge/Tests-116%20passing-brightgreen?style=flat)](tests/app.test.js)
 [![CI](https://img.shields.io/github/actions/workflow/Hanley-Liu/todo-app/ci.yml?branch=main&label=CI&style=flat)](.github/workflows/ci.yml)
 [![GitHub Stars](https://img.shields.io/github/stars/Hanley-Liu/todo-app?style=flat&color=gold)](https://github.com/Hanley-Liu/todo-app/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/Hanley-Liu/todo-app?style=flat&color=lightgrey)](https://github.com/Hanley-Liu/todo-app/network)
@@ -26,7 +26,7 @@
 - **Responsive design** — adapts to mobile and desktop screens
 - **XSS-safe rendering** — all user text is inserted via `textContent`; `innerHTML` is never used
 - **Graceful degradation** — when `localStorage` is unavailable (private mode), the app keeps working in-memory for the session
-- **113 unit tests** — a dependency-free test runner covers the core logic (run `node tests/app.test.js`)
+- **116 unit tests** — a dependency-free test runner covers the core logic (run `node tests/app.test.js`)
 
 ---
 
@@ -92,7 +92,7 @@ The project ships with a self-contained test suite using a minimal, dependency-f
 node tests/app.test.js
 ```
 
-This runs **113 tests** covering:
+This runs **116 tests** covering:
 
 - `hasValidInput` — input validation (6 tests)
 - `createTodo` — todo creation & ID generation (3 tests)
@@ -115,6 +115,7 @@ This runs **113 tests** covering:
 - `updateFilterBar` — filter bar visibility based on todo count (4 tests)
 - `adjustFilterIfNeeded` — auto-switches to 'all' filter when current filter is empty (7 tests)
 - `render (empty state)` — empty state messages (4 tests)
+- `syncFilterButtons` — active class syncing on filter buttons (3 tests)
 
 Exit code is `0` on success and `1` on any failure, making it CI-friendly.
 
@@ -128,7 +129,7 @@ todo-app/
 ├── style.css               # All styling + responsive layout
 ├── app.js                  # Core logic (pure functions + DOM + persistence)
 ├── tests/
-│   └── app.test.js         # Dependency-free unit test suite (113 tests)
+│   └── app.test.js         # Dependency-free unit test suite (116 tests)
 ├── discussion/
 │   ├── product-requirements.md
 │   ├── architecture.md

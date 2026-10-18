@@ -330,6 +330,39 @@
     };
   }
 
+  function createMockFilterButton(filter) {
+    return {
+      dataset: { filter: filter },
+      classList: {
+        _active: false,
+        contains: function (cls) {
+          if (cls === 'active') return this._active;
+          return false;
+        },
+        add: function (cls) {
+          if (cls === 'active') this._active = true;
+        },
+        remove: function (cls) {
+          if (cls === 'active') this._active = false;
+        },
+        toggle: function (cls, force) {
+          if (cls === 'active') this._active = force;
+        },
+      },
+    };
+  }
+
+  function createMockFilterBar() {
+    var buttons = [
+      createMockFilterButton('all'),
+      createMockFilterButton('active'),
+      createMockFilterButton('completed'),
+    ];
+    return {
+      querySelectorAll: function () { return buttons; },
+    };
+  }
+
   // -------------------------------------------------------------------------
   // Tests
   // -------------------------------------------------------------------------
@@ -1310,6 +1343,37 @@
     var emptyState = createMockEmptyState();
     app.render(todos, 'all', list, emptyState);
     assertTrue(emptyState.classList.contains('hidden'), 'empty state hidden when todos visible');
+  });
+
+  // --- syncFilterButtons ---
+  suite('syncFilterButtons');
+
+  test('adds active class to the matching filter button only', function () {
+    var filterBar = createMockFilterBar();
+    app.syncFilterButtons('active', filterBar);
+    var buttons = filterBar.querySelectorAll();
+    assertFalse(buttons[0].classList.contains('active'), 'all button not active');
+    assertTrue(buttons[1].classList.contains('active'), 'active button is active');
+    assertFalse(buttons[2].classList.contains('active'), 'completed button not active');
+  });
+
+  test('switches active class when filter changes from active to completed', function () {
+    var filterBar = createMockFilterBar();
+    app.syncFilterButtons('active', filterBar);
+    app.syncFilterButtons('completed', filterBar);
+    var buttons = filterBar.querySelectorAll();
+    assertFalse(buttons[0].classList.contains('active'), 'all button not active');
+    assertFalse(buttons[1].classList.contains('active'), 'active button not active after switch');
+    assertTrue(buttons[2].classList.contains('active'), 'completed button is active');
+  });
+
+  test('sets active class to all when filter is all', function () {
+    var filterBar = createMockFilterBar();
+    app.syncFilterButtons('all', filterBar);
+    var buttons = filterBar.querySelectorAll();
+    assertTrue(buttons[0].classList.contains('active'), 'all button is active');
+    assertFalse(buttons[1].classList.contains('active'), 'active button not active');
+    assertFalse(buttons[2].classList.contains('active'), 'completed button not active');
   });
 
   // -------------------------------------------------------------------------

@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `syncFilterButtons` function: syncs the 'active' class on all filter buttons (All/Active/Completed) to reflect the currently active filter, ensuring the UI always shows which filter is selected
+- 3 new tests for `syncFilterButtons` covering active-class assignment, switching between filters, and the 'all' filter
+
+### Fixed
+- Correctness bug: clicking a filter button (e.g., "Active") when that filter has matching todos did not update the 'active' class on the filter buttons — the previously-active button retained the 'active' class and the clicked button did not receive it, leaving the UI showing the wrong active filter; `refreshView()` now always calls `syncFilterButtons()` (previously only synced when an auto-switch occurred), so the active class is correctly updated on every filter change
+
+### Added
 - `updateFilterBar` function: hides the filter bar (All/Active/Completed buttons + Clear completed) when the todo list is empty, preventing confusing controls when there's nothing to filter
 - 4 new tests for `updateFilterBar` covering empty list, incomplete-only, completed-only, and mixed todo states
 - `adjustFilterIfNeeded` function: auto-switches the active filter to 'all' when the current filter ('active' or 'completed') would show zero todos, preventing users from being stranded on an empty filter view after toggling, deleting, or clearing completed todos
