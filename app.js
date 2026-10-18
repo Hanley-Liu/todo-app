@@ -570,11 +570,9 @@
     filterBar.addEventListener('click', function (e) {
       if (e.target.classList.contains('filter-btn')) {
         currentFilter = e.target.dataset.filter;
-        // Update active state on filter buttons
-        var buttons = filterBar.querySelectorAll('.filter-btn');
-        buttons.forEach(function (btn) {
-          btn.classList.toggle('active', btn === e.target);
-        });
+        // refreshView() calls adjustFilterIfNeeded() which auto-switches
+        // to 'all' if the selected filter matches zero todos, and then
+        // syncs the active class on all filter buttons uniformly.
         refreshView();
       }
     });
