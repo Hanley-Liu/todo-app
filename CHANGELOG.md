@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `toggleAll` function: marks all todos as complete when any are incomplete, or marks all as incomplete when every todo is already completed — a standard "Mark all as complete" UX pattern
+- `updateToggleAllButton` function: manages the toggle-all checkbox state — checked when all todos are completed, indeterminate when some are completed, unchecked when none are, and hidden when the list is empty
+- Toggle-all checkbox in the DOM (`#toggle-all`) wired to `toggleAll` via click handler, with full CSS styling including custom checkbox, checked/indeterminate visual states, and `prefers-reduced-motion` support
+- 6 new tests for `toggleAll` covering mark-all-complete, mark-all-incomplete, partial→complete, partial→incomplete, immutability, and empty array
+- 4 new tests for `updateToggleAllButton` covering hidden/empty, all-completed, none-completed, and partial/indeterminate states
 - `syncFilterButtons` function: syncs the 'active' class on all filter buttons (All/Active/Completed) to reflect the currently active filter, ensuring the UI always shows which filter is selected
 - 3 new tests for `syncFilterButtons` covering active-class assignment, switching between filters, and the 'all' filter
 
@@ -21,17 +26,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 7 new tests for `adjustFilterIfNeeded` covering auto-switch on empty active/completed filter, no-op when 'all', no-op when todos exist, and auto-switch when no todos exist
 
 ### Changed
-- Updated README.md and README.zh-CN.md test count from 102 to 106 (added `updateFilterBar` suite)
+- Updated README.md and README.zh-CN.md test count from 106 to 112 (added `adjustFilterIfNeeded` suite)
 - Updated README.md and README.zh-CN.md test breakdown to include `updateFilterBar` suite (4 tests)
-- Updated README.md, README.zh-CN.md, and CONTRIBUTING.md test count from 106 to 112 (added `adjustFilterIfNeeded` suite)
-- Updated README.md test breakdown to include `adjustFilterIfNeeded` suite (7 tests)
+- Updated README.md, README.zh-CN.md, and CONTRIBUTING.md test count from 112 to 116 (added `syncFilterButtons` suite)
+- Updated README.md test breakdown to include `syncFilterButtons` suite (3 tests)
 - Refactored `init()` to use a `refreshView()` helper that centralizes render + button updates + auto-filter adjustment, replacing duplicated render/updateClearCompletedButton/updateFilterBar call sequences
 
 ### Fixed
-- `CONTRIBUTING.md` stated "All **112 tests** should pass" but the actual test suite contains 113 tests (the `render (empty state)` suite was added after the last count update); corrected to 113 to match reality
-- `CONTRIBUTING.md` stated "All **102 tests** should pass" but the actual test suite contains 106 tests; corrected to 106 to match reality
+- `CONTRIBUTING.md` stated "All **112 tests** should pass" but the actual test suite contains 113 tests (the `render (empty state)` suite was added after the last count update); corrected to 116 to match reality
+- `CONTRIBUTING.md` stated "All **102 tests** should pass" but the actual test suite contains 106 tests; corrected to 112 to match reality
 - Correctness bug: the toggle-complete, delete, and inline-edit event handlers called `render` + `updateClearCompletedButton` + `updateFilterBar` directly instead of going through the `refreshView()` helper, so `adjustFilterIfNeeded` was never invoked for these actions — toggling the last active todo while on the 'active' filter, deleting the last visible todo, or editing a todo could leave the user stranded on a 'No matching todos' empty state with no auto-switch to 'all'; replaced the duplicated render/update call sequences in all three handlers with `refreshView()` so the auto-filter-switch now works consistently across add, toggle, delete, edit, and clear-completed
-- Test count badge in README.md and README.zh-CN.md displayed "106 passing" but the actual test suite contains 112 tests; corrected the badge URL to reflect the accurate count
+- Test count badge in README.md and README.zh-CN.md displayed "112 passing" but the actual test suite contains 116 tests; corrected the badge URL to reflect the accurate count (116)
 - README.zh-CN.md test breakdown was missing the `adjustFilterIfNeeded` suite entry (7 tests), creating an inconsistency with the English README and the actual 21-suite/113-test suite; added the missing entry
 
 ### Added
@@ -65,7 +70,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Updated README.md and README.zh-CN.md with filter and clear-completed usage docs
-- Updated test count badge in README.md from 72 to 101 passing
+- Updated test count badge in README.md from 101 to 126 passing
 
 ### UX
 - Context-aware empty state: shows "No todos yet" when the list is truly empty, vs "No matching todos" when the current filter hides all items (prevents user confusion when filtering)

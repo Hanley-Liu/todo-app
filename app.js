@@ -144,6 +144,23 @@
     });
   }
 
+  /**
+   * Toggles the completion state of ALL todos at once.
+   * If every todo is already completed, marks them all as incomplete.
+   * Otherwise, marks every todo as completed.
+   * Pure: does not mutate the input array or its objects.
+   * @param {Todo[]} todos — Current state
+   * @returns {Todo[]} New state with all todos toggled
+   */
+  function toggleAll(todos) {
+    var allCompleted = todos.length > 0 && todos.every(function (todo) {
+      return todo.completed;
+    });
+    return todos.map(function (todo) {
+      return Object.assign({}, todo, { completed: !allCompleted });
+    });
+  }
+
   // ---------------------------------------------------------------------------
   // Validation & Sanitization (Security)
   // ---------------------------------------------------------------------------
@@ -364,6 +381,36 @@
   }
 
   /**
+   * Updates the "toggle all" checkbox/button state.
+   * - When all todos are completed, the toggle-all is checked.
+   * - When some (but not all) are completed, it is in an indeterminate state.
+   * - When none are completed, it is unchecked.
+   * The toggle-all control is hidden when there are no todos at all.
+   * @param {Todo[]} todos — The full state
+   * @param {HTMLInputElement} toggleAllBtn — The checkbox element
+   */
+  function updateToggleAllButton(todos, toggleAllBtn) {
+    if (todos.length === 0) {
+      toggleAllBtn.classList.add('hidden');
+      toggleAllBtn.checked = false;
+      toggleAllBtn.indeterminate = false;
+      return;
+    }
+    toggleAllBtn.classList.remove('hidden');
+    var completedCount = todos.filter(function (t) { return t.completed; }).length;
+    if (completedCount === todos.length) {
+      toggleAllBtn.checked = true;
+      toggleAllBtn.indeterminate = false;
+    } else if (completedCount === 0) {
+      toggleAllBtn.checked = false;
+      toggleAllBtn.indeterminate = false;
+    } else {
+      toggleAllBtn.checked = false;
+      toggleAllBtn.indeterminate = true;
+    }
+  }
+
+  /**
    * Shows or hides the filter bar based on whether there are any todos.
    * When the list is empty, the filter buttons ("All", "Active", "Completed")
    * and the "Clear completed" button are hidden to avoid presenting
@@ -420,8 +467,9 @@
     var emptyState = document.getElementById('empty-state');
     var filterBar = document.getElementById('filter-bar');
     var clearCompletedBtn = document.getElementById('clear-completed');
+    var toggleAllBtn = document.getElementById('toggle-all');
 
-    if (!form || !input || !addBtn || !list || !emptyState || !filterBar || !clearCompletedBtn) {
+    if (!form || !input || !addBtn || !list || !emptyState || !filterBar || !clearCompletedBtn || !toggleAllBtn) {
       console.error('Todo App: Required DOM elements not found');
       return;
     }
@@ -442,6 +490,7 @@
       syncFilterButtons(currentFilter, filterBar);
       render(todos, currentFilter, list, emptyState);
       updateClearCompletedButton(todos, clearCompletedBtn);
+      updateToggleAllButton(todos, toggleAllBtn);
       updateFilterBar(todos, filterBar);
     }
 
@@ -593,6 +642,14 @@
       refreshView();
       input.focus();
     });
+
+    // --- Toggle all button: mark all as complete / uncomplete ---
+    toggleAllBtn.addEventListener('click', function () {
+      todos = toggleAll(todos);
+      saveToLocalStorage(todos);
+      refreshView();
+      input.focus();
+    });
   }
 
   // Bootstrap — guard so Node.js test environment does not crash
@@ -619,6 +676,8 @@
       editTodo: editTodo,
       filterTodos: filterTodos,
       clearCompleted: clearCompleted,
+      toggleAll: toggleAll,
+      updateToggleAllButton: updateToggleAllButton,
       isValidTodo: isValidTodo,
       sanitizeTodos: sanitizeTodos,
       saveToLocalStorage: saveToLocalStorage,

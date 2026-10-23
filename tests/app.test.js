@@ -352,6 +352,29 @@
     };
   }
 
+  function createMockToggleAll() {
+    return {
+      checked: false,
+      indeterminate: false,
+      classList: {
+        _hidden: false,
+        contains: function (cls) {
+          if (cls === 'hidden') return this._hidden;
+          return false;
+        },
+        add: function (cls) {
+          if (cls === 'hidden') this._hidden = true;
+        },
+        remove: function (cls) {
+          if (cls === 'hidden') this._hidden = false;
+        },
+        toggle: function (cls, force) {
+          if (cls === 'hidden') this._hidden = force;
+        },
+      },
+    };
+  }
+
   function createMockFilterBar() {
     var buttons = [
       createMockFilterButton('all'),
@@ -729,6 +752,61 @@
 
   test('handles empty array', function () {
     var result = app.clearCompleted([]);
+    assertEqual(result.length, 0, 'empty array');
+  });
+
+  // --- toggleAll ---
+  suite('toggleAll');
+
+  test('marks all incomplete todos as completed', function () {
+    var todos = [app.createTodo('A'), app.createTodo('B')];
+    var result = app.toggleAll(todos);
+    assertEqual(result.length, 2, 'same count');
+    assertTrue(result[0].completed, 'first completed');
+    assertTrue(result[1].completed, 'second completed');
+  });
+
+  test('marks all completed todos as incomplete when all are completed', function () {
+    var todos = [app.createTodo('A'), app.createTodo('B')];
+    todos[0].completed = true;
+    todos[1].completed = true;
+    var result = app.toggleAll(todos);
+    assertEqual(result.length, 2, 'same count');
+    assertFalse(result[0].completed, 'first uncompleted');
+    assertFalse(result[1].completed, 'second uncompleted');
+  });
+
+  test('marks all as completed when some are completed (partial state)', function () {
+    var todos = [app.createTodo('A'), app.createTodo('B'), app.createTodo('C')];
+    todos[0].completed = true;
+    var result = app.toggleAll(todos);
+    assertTrue(result[0].completed, 'first completed');
+    assertTrue(result[1].completed, 'second completed');
+    assertTrue(result[2].completed, 'third completed');
+  });
+
+  test('marks all as incomplete when some are completed (partial state)', function () {
+    var todos = [app.createTodo('A'), app.createTodo('B'), app.createTodo('C')];
+    todos[0].completed = true;
+    // Now toggle again — all were completed, so all become incomplete
+    var toggled = app.toggleAll(todos);
+    var result = app.toggleAll(toggled);
+    assertFalse(result[0].completed, 'first uncompleted');
+    assertFalse(result[1].completed, 'second uncompleted');
+    assertFalse(result[2].completed, 'third uncompleted');
+  });
+
+  test('does not mutate the original array or todo objects', function () {
+    var todos = [app.createTodo('A'), app.createTodo('B')];
+    todos[0].completed = true;
+    var originalCompleted = todos[0].completed;
+    var result = app.toggleAll(todos);
+    assertEqual(todos[0].completed, originalCompleted, 'original todo unchanged');
+    assertTrue(result !== todos, 'new array returned');
+  });
+
+  test('handles empty array', function () {
+    var result = app.toggleAll([]);
     assertEqual(result.length, 0, 'empty array');
   });
 
@@ -1265,6 +1343,47 @@
     var filterBar = createMockButtonWithClass();
     app.updateFilterBar(todos, filterBar);
     assertFalse(filterBar.classList.contains('hidden'), 'filter bar visible with mixed todos');
+  });
+
+  // --- updateToggleAllButton ---
+  suite('updateToggleAllButton');
+
+  test('hides toggle-all when todo list is empty', function () {
+    var btn = createMockToggleAll();
+    app.updateToggleAllButton([], btn);
+    assertTrue(btn.classList.contains('hidden'), 'toggle-all hidden when no todos');
+    assertFalse(btn.checked, 'unchecked when empty');
+    assertFalse(btn.indeterminate, 'not indeterminate when empty');
+  });
+
+  test('checks toggle-all when all todos are completed', function () {
+    var todos = [app.createTodo('A'), app.createTodo('B')];
+    todos[0].completed = true;
+    todos[1].completed = true;
+    var btn = createMockToggleAll();
+    app.updateToggleAllButton(todos, btn);
+    assertFalse(btn.classList.contains('hidden'), 'toggle-all visible');
+    assertTrue(btn.checked, 'checked when all completed');
+    assertFalse(btn.indeterminate, 'not indeterminate when all completed');
+  });
+
+  test('unchecks toggle-all when no todos are completed', function () {
+    var todos = [app.createTodo('A'), app.createTodo('B')];
+    var btn = createMockToggleAll();
+    app.updateToggleAllButton(todos, btn);
+    assertFalse(btn.classList.contains('hidden'), 'toggle-all visible');
+    assertFalse(btn.checked, 'unchecked when none completed');
+    assertFalse(btn.indeterminate, 'not indeterminate when none completed');
+  });
+
+  test('sets indeterminate when some but not all todos are completed', function () {
+    var todos = [app.createTodo('A'), app.createTodo('B'), app.createTodo('C')];
+    todos[0].completed = true;
+    var btn = createMockToggleAll();
+    app.updateToggleAllButton(todos, btn);
+    assertFalse(btn.classList.contains('hidden'), 'toggle-all visible');
+    assertFalse(btn.checked, 'unchecked when partial');
+    assertTrue(btn.indeterminate, 'indeterminate when partial');
   });
 
   // --- adjustFilterIfNeeded ---

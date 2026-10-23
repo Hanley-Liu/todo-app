@@ -21,6 +21,19 @@
       <button id="add-btn" type="submit" disabled>Add</button>
     </form>
 
+    <div class="toggle-all-row">
+      <label for="toggle-all" class="toggle-all-label">
+        <input
+          id="toggle-all"
+          type="checkbox"
+          class="toggle-all hidden"
+          aria-label="Toggle all todos"
+        />
+        <span class="toggle-all-checkmark"></span>
+        <span class="toggle-all-text">Mark all as complete</span>
+      </label>
+    </div>
+
     <p id="empty-state" class="empty-state hidden">No todos yet</p>
 
     <ul id="todo-list" class="todo-list" aria-label="Todo list" aria-live="polite" aria-relevant="all"></ul>
