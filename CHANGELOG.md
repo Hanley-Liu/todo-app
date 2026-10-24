@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
 
+### Fixed
+- CHANGELOG.md was missing the `## [Unreleased]` section at the top — the first entry started directly with bullet points under `### Fixed` without a version header, violating the Keep a Changelog convention; added the standard `## [Unreleased]` section to properly structure future changes
+
+### Added
 - `updateToggleAllButton` function: manages the toggle-all checkbox state — checked when all todos are completed, indeterminate when some are completed, unchecked when none are, and hidden when the list is empty
 - Toggle-all checkbox in the DOM (`#toggle-all`) wired to `toggleAll` via click handler, with full CSS styling including custom checkbox, checked/indeterminate visual states, and `prefers-reduced-motion` support
 - 6 new tests for `toggleAll` covering mark-all-complete, mark-all-incomplete, partial→complete, partial→incomplete, immutability, and empty array
