@@ -13,93 +13,101 @@
 
   // --- Install mock document BEFORE requiring app.js ---
   // app.js checks for document at module load time (init guards)
-  var mockDocument = {
-    createElement: function (tag) {
-      var el = {
-        tagName: tag.toUpperCase(),
-        className: '',
-        dataset: {},
-        children: [],
-        childNodes: [],
-        textContent: '',
-        value: '',
-        type: '',
-        checked: false,
-        disabled: false,
-        maxLength: '',
-        _classList: [],
-        _className: '',
-        _attrs: {},
-        _eventListeners: {},
-        appendChild: function (child) {
-          this.children.push(child);
-          this.childNodes.push(child);
-          return child;
-        },
-        removeChild: function (child) {
-          var idx = this.children.indexOf(child);
-          if (idx > -1) this.children.splice(idx, 1);
-          var cidx = this.childNodes.indexOf(child);
-          if (cidx > -1) this.childNodes.splice(cidx, 1);
-          return child;
-        },
-        querySelector: function (sel) {
-          for (var i = 0; i < this.children.length; i++) {
-            if (this.children[i].className && this.children[i].className.indexOf(sel.slice(1)) > -1) {
-              return this.children[i];
-            }
+
+  // Reusable mock element factory — shared by createElement and getElementById
+  // so that init() in app.js finds the DOM elements it expects and does not
+  // log a misleading "Required DOM elements not found" error during tests.
+  function createMockElement(tag) {
+    var el = {
+      tagName: (tag || 'div').toUpperCase(),
+      className: '',
+      dataset: {},
+      children: [],
+      childNodes: [],
+      textContent: '',
+      value: '',
+      type: '',
+      checked: false,
+      disabled: false,
+      maxLength: '',
+      _classList: [],
+      _className: '',
+      _attrs: {},
+      _eventListeners: {},
+      appendChild: function (child) {
+        this.children.push(child);
+        this.childNodes.push(child);
+        return child;
+      },
+      removeChild: function (child) {
+        var idx = this.children.indexOf(child);
+        if (idx > -1) this.children.splice(idx, 1);
+        var cidx = this.childNodes.indexOf(child);
+        if (cidx > -1) this.childNodes.splice(cidx, 1);
+        return child;
+      },
+      querySelector: function (sel) {
+        for (var i = 0; i < this.children.length; i++) {
+          if (this.children[i].className && this.children[i].className.indexOf(sel.slice(1)) > -1) {
+            return this.children[i];
           }
-          return null;
+        }
+        return null;
+      },
+      querySelectorAll: function () { return []; },
+      setAttribute: function (name, val) { this._attrs[name] = val; },
+      getAttribute: function (name) { return this._attrs[name] || null; },
+      addEventListener: function (type, fn) {
+        this._eventListeners[type] = fn;
+      },
+      classList: {
+        _classes: [],
+        contains: function (cls) {
+          return this._classes.indexOf(cls) > -1;
         },
-        querySelectorAll: function () { return []; },
-        setAttribute: function (name, val) { this._attrs[name] = val; },
-        getAttribute: function (name) { return this._attrs[name] || null; },
-        addEventListener: function (type, fn) {
-          this._eventListeners[type] = fn;
+        add: function (cls) {
+          if (this._classes.indexOf(cls) === -1) this._classes.push(cls);
         },
-        classList: {
-          _classes: [],
-          contains: function (cls) {
-            return this._classes.indexOf(cls) > -1;
-          },
-          add: function (cls) {
-            if (this._classes.indexOf(cls) === -1) this._classes.push(cls);
-          },
-          remove: function (cls) {
+        remove: function (cls) {
+          var idx = this._classes.indexOf(cls);
+          if (idx > -1) this._classes.splice(idx, 1);
+        },
+        toggle: function (cls, force) {
+          if (force === undefined) {
             var idx = this._classes.indexOf(cls);
             if (idx > -1) this._classes.splice(idx, 1);
-          },
-          toggle: function (cls, force) {
-            if (force === undefined) {
-              var idx = this._classes.indexOf(cls);
-              if (idx > -1) this._classes.splice(idx, 1);
-              else this._classes.push(cls);
-            } else if (force) {
-              if (this._classes.indexOf(cls) === -1) this._classes.push(cls);
-            } else {
-              var idx2 = this._classes.indexOf(cls);
-              if (idx2 > -1) this._classes.splice(idx2, 1);
-            }
-          },
-        },
-        setSelectionRange: function () {},
-        focus: function () {},
-      };
-      el.classList._classes = el._classList;
-      Object.defineProperty(el, 'className', {
-        get: function () { return el._className; },
-        set: function (val) {
-          el._className = val || '';
-          el._classList.length = 0;
-          if (val) {
-            val.split(/\s+/).forEach(function (c) {
-              if (c) el._classList.push(c);
-            });
+            else this._classes.push(cls);
+          } else if (force) {
+            if (this._classes.indexOf(cls) === -1) this._classes.push(cls);
+          } else {
+            var idx2 = this._classes.indexOf(cls);
+            if (idx2 > -1) this._classes.splice(idx2, 1);
           }
         },
-        configurable: true,
-      });
-      return el;
+      },
+      setSelectionRange: function () {},
+      focus: function () {},
+    };
+    el.classList._classes = el._classList;
+    Object.defineProperty(el, 'className', {
+      get: function () { return el._className; },
+      set: function (val) {
+        el._className = val || '';
+        el._classList.length = 0;
+        if (val) {
+          val.split(/\s+/).forEach(function (c) {
+            if (c) el._classList.push(c);
+          });
+        }
+      },
+      configurable: true,
+    });
+    return el;
+  }
+
+  var mockDocument = {
+    createElement: function (tag) {
+      return createMockElement(tag);
     },
     createDocumentFragment: function () {
       return {
@@ -111,6 +119,21 @@
       };
     },
     getElementById: function (id) {
+      // Return mock elements for the IDs that init() in app.js looks up,
+      // so the bootstrap guard does not fire a misleading error message.
+      var knownIds = {
+        'todo-form': 'form',
+        'todo-input': 'input',
+        'add-btn': 'button',
+        'todo-list': 'ul',
+        'empty-state': 'div',
+        'filter-bar': 'div',
+        'clear-completed': 'button',
+        'toggle-all': 'button',
+      };
+      if (Object.prototype.hasOwnProperty.call(knownIds, id)) {
+        return createMockElement(knownIds[id]);
+      }
       return null;
     },
     readyState: 'complete',

@@ -5,10 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
 
-### Added
-- `toggleAll` function: marks all todos as complete when any are incomplete, or marks all as incomplete when every todo is already completed — a standard "Mark all as complete" UX pattern
 - `updateToggleAllButton` function: manages the toggle-all checkbox state — checked when all todos are completed, indeterminate when some are completed, unchecked when none are, and hidden when the list is empty
 - Toggle-all checkbox in the DOM (`#toggle-all`) wired to `toggleAll` via click handler, with full CSS styling including custom checkbox, checked/indeterminate visual states, and `prefers-reduced-motion` support
 - 6 new tests for `toggleAll` covering mark-all-complete, mark-all-incomplete, partial→complete, partial→incomplete, immutability, and empty array
@@ -17,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 3 new tests for `syncFilterButtons` covering active-class assignment, switching between filters, and the 'all' filter
 
 ### Fixed
+- Test runner output noise: the mock `document.getElementById` returned `null` for all IDs, so when `app.js` loaded and `init()` ran (readyState was 'complete'), it logged a misleading "Todo App: Required DOM elements not found" error at the top of every test run — refactored the mock element factory into a shared `createMockElement()` function and made `getElementById` return mock elements for the 8 IDs that `init()` looks up (`todo-form`, `todo-input`, `add-btn`, `todo-list`, `empty-state`, `filter-bar`, `clear-completed`, `toggle-all`), eliminating the false error and making test output clean
 - Correctness bug: clicking a filter button (e.g., "Active") when that filter has matching todos did not update the 'active' class on the filter buttons — the previously-active button retained the 'active' class and the clicked button did not receive it, leaving the UI showing the wrong active filter; `refreshView()` now always calls `syncFilterButtons()` (previously only synced when an auto-switch occurred), so the active class is correctly updated on every filter change
 
 ### Added
