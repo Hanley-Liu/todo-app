@@ -451,6 +451,11 @@
     assertFalse(todo.completed, 'completed');
   });
 
+  test('trims leading and trailing whitespace from text', function () {
+    var todo = app.createTodo('  Buy milk  ');
+    assertEqual(todo.text, 'Buy milk', 'text trimmed');
+  });
+
   test('generates a non-empty string id', function () {
     var todo = app.createTodo('Test');
     assertTrue(typeof todo.id === 'string', 'id should be string');

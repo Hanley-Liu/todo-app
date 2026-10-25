@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - CHANGELOG.md was missing the `## [Unreleased]` section at the top — the first entry started directly with bullet points under `### Fixed` without a version header, violating the Keep a Changelog convention; added the standard `## [Unreleased]` section to properly structure future changes
+- Correctness bug: `createTodo` did not trim whitespace from the `text` parameter, unlike `addTodo` (which trims before calling `createTodo`) and `editTodo` (which trims independently) — calling `createTodo('  Buy milk  ')` directly would store the untrimmed text, creating an inconsistency where todos created via different code paths could have different whitespace handling; `createTodo` now trims string input (with a `typeof` guard for safety), and a new test verifies the trimming behavior
 
 ### Added
 - `updateToggleAllButton` function: manages the toggle-all checkbox state — checked when all todos are completed, indeterminate when some are completed, unchecked when none are, and hidden when the list is empty
@@ -17,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 4 new tests for `updateToggleAllButton` covering hidden/empty, all-completed, none-completed, and partial/indeterminate states
 - `syncFilterButtons` function: syncs the 'active' class on all filter buttons (All/Active/Completed) to reflect the currently active filter, ensuring the UI always shows which filter is selected
 - 3 new tests for `syncFilterButtons` covering active-class assignment, switching between filters, and the 'all' filter
+- 1 new test for `createTodo` verifying that leading/trailing whitespace is trimmed from the text parameter
+
+### Changed
+- Updated test count references in README.md, README.zh-CN.md, and CONTRIBUTING.md from 126 to 127 passing
 
 ### Fixed
 - Test runner output noise: the mock `document.getElementById` returned `null` for all IDs, so when `app.js` loaded and `init()` ran (readyState was 'complete'), it logged a misleading "Todo App: Required DOM elements not found" error at the top of every test run — refactored the mock element factory into a shared `createMockElement()` function and made `getElementById` return mock elements for the 8 IDs that `init()` looks up (`todo-form`, `todo-input`, `add-btn`, `todo-list`, `empty-state`, `filter-bar`, `clear-completed`, `toggle-all`), eliminating the false error and making test output clean

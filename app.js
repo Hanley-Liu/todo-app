@@ -33,7 +33,7 @@
   function createTodo(text) {
     return {
       id: generateId(),
-      text: text,
+      text: typeof text === 'string' ? text.trim() : text,
       completed: false,
     };
   }
