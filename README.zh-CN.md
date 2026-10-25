@@ -92,7 +92,7 @@ node tests/app.test.js
 共计 **127 个测试**，覆盖范围包括：
 
 - `hasValidInput` — 输入校验（6 测试）
-- `createTodo` — 待办创建与 ID 生成（3 测试）
+- `createTodo` — 待办创建与 ID 生成（4 测试）
 - `addTodo` — 添加、去除首尾空格、不可变性（7 测试）
 - `toggleTodo` — 完成状态切换（6 测试）
 - `deleteTodo` — 删除、不可变性（5 测试）

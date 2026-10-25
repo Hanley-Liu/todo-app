@@ -95,7 +95,7 @@ node tests/app.test.js
 This runs **127 tests** covering:
 
 - `hasValidInput` — input validation (6 tests)
-- `createTodo` — todo creation & ID generation (3 tests)
+- `createTodo` — todo creation & ID generation (4 tests)
 - `addTodo` — adding, trimming, immutability (7 tests)
 - `toggleTodo` — completion toggling (6 tests)
 - `deleteTodo` — removal, immutability (5 tests)

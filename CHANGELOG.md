@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - CHANGELOG.md was missing the `## [Unreleased]` section at the top — the first entry started directly with bullet points under `### Fixed` without a version header, violating the Keep a Changelog convention; added the standard `## [Unreleased]` section to properly structure future changes
 - Correctness bug: `createTodo` did not trim whitespace from the `text` parameter, unlike `addTodo` (which trims before calling `createTodo`) and `editTodo` (which trims independently) — calling `createTodo('  Buy milk  ')` directly would store the untrimmed text, creating an inconsistency where todos created via different code paths could have different whitespace handling; `createTodo` now trims string input (with a `typeof` guard for safety), and a new test verifies the trimming behavior
+- Docs: README.md and README.zh-CN.md listed `createTodo` suite as having 3 tests; corrected to 4 tests (verified via `count_tests.js`) for consistency with the actual test suite
 
 ### Added
 - `updateToggleAllButton` function: manages the toggle-all checkbox state — checked when all todos are completed, indeterminate when some are completed, unchecked when none are, and hidden when the list is empty
@@ -114,4 +115,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Test count inconsistency across documentation: README.md body text and project tree said "72 tests" while the badge and actual test suite reported 101; README.zh-CN.md badge said "72 passing" while body text said "72"; CONTRIBUTING.md said "72 tests" — all references now consistently state 101 tests
-- README.md and README.zh-CN.md test breakdown listed incorrect per-suite test counts (e.g. `addTodo` 6→7, `editTodo` 5→9, `toggleTodo` 5→6, `filterTodos` 5→6, `clearCompleted` 4→5, `saveToLocalStorage` 4→5) and omitted six suites entirely (`generateId`, `createTodoElement`, `render`, `updateAddButton`, `updateClearCompletedButton`, `render (empty state)`); both READMEs now list all 24 suites with accurate counts
+- README.md and README.zh-CN.md test breakdown listed incorrect per-suite test counts (e.g. `createTodo` 3→4, `addTodo` 6→7, `editTodo` 5→9, `toggleTodo` 5→6, `filterTodos` 5→6, `clearCompleted` 4→5, `saveToLocalStorage` 4→5) and omitted six suites entirely (`generateId`, `createTodoElement`, `render`, `updateAddButton`, `updateClearCompletedButton`, `render (empty state)`); both READMEs now list all 24 suites with accurate counts
