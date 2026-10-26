@@ -385,18 +385,27 @@
    * - When all todos are completed, the toggle-all is checked.
    * - When some (but not all) are completed, it is in an indeterminate state.
    * - When none are completed, it is unchecked.
-   * The toggle-all control is hidden when there are no todos at all.
+   * The entire toggle-all row (checkbox + "Mark all as complete" label) is
+   * hidden when there are no todos at all, so users don't see a misleading
+   * "Mark all as complete" prompt with an empty list.
    * @param {Todo[]} todos — The full state
    * @param {HTMLInputElement} toggleAllBtn — The checkbox element
+   * @param {HTMLElement} toggleAllRow — The container row element
    */
-  function updateToggleAllButton(todos, toggleAllBtn) {
+  function updateToggleAllButton(todos, toggleAllBtn, toggleAllRow) {
     if (todos.length === 0) {
       toggleAllBtn.classList.add('hidden');
+      if (toggleAllRow) {
+        toggleAllRow.classList.add('hidden');
+      }
       toggleAllBtn.checked = false;
       toggleAllBtn.indeterminate = false;
       return;
     }
     toggleAllBtn.classList.remove('hidden');
+    if (toggleAllRow) {
+      toggleAllRow.classList.remove('hidden');
+    }
     var completedCount = todos.filter(function (t) { return t.completed; }).length;
     if (completedCount === todos.length) {
       toggleAllBtn.checked = true;
@@ -468,6 +477,7 @@
     var filterBar = document.getElementById('filter-bar');
     var clearCompletedBtn = document.getElementById('clear-completed');
     var toggleAllBtn = document.getElementById('toggle-all');
+    var toggleAllRow = document.querySelector('.toggle-all-row');
 
     if (!form || !input || !addBtn || !list || !emptyState || !filterBar || !clearCompletedBtn || !toggleAllBtn) {
       console.error('Todo App: Required DOM elements not found');
@@ -490,7 +500,7 @@
       syncFilterButtons(currentFilter, filterBar);
       render(todos, currentFilter, list, emptyState);
       updateClearCompletedButton(todos, clearCompletedBtn);
-      updateToggleAllButton(todos, toggleAllBtn);
+      updateToggleAllButton(todos, toggleAllBtn, toggleAllRow);
       updateFilterBar(todos, filterBar);
     }
 

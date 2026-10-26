@@ -137,6 +137,13 @@
       return null;
     },
     readyState: 'complete',
+    querySelector: function (sel) {
+      // Return a mock element for the toggle-all-row selector
+      if (sel === '.toggle-all-row') {
+        return createMockElement('div');
+      }
+      return null;
+    },
   };
 
   global.document = mockDocument;
@@ -379,6 +386,27 @@
     return {
       checked: false,
       indeterminate: false,
+      classList: {
+        _hidden: false,
+        contains: function (cls) {
+          if (cls === 'hidden') return this._hidden;
+          return false;
+        },
+        add: function (cls) {
+          if (cls === 'hidden') this._hidden = true;
+        },
+        remove: function (cls) {
+          if (cls === 'hidden') this._hidden = false;
+        },
+        toggle: function (cls, force) {
+          if (cls === 'hidden') this._hidden = force;
+        },
+      },
+    };
+  }
+
+  function createMockToggleAllRow() {
+    return {
       classList: {
         _hidden: false,
         contains: function (cls) {
@@ -1378,10 +1406,29 @@
 
   test('hides toggle-all when todo list is empty', function () {
     var btn = createMockToggleAll();
+    var row = createMockToggleAllRow();
+    app.updateToggleAllButton([], btn, row);
+    assertTrue(btn.classList.contains('hidden'), 'toggle-all hidden when no todos');
+    assertTrue(row.classList.contains('hidden'), 'toggle-all row hidden when no todos');
+    assertFalse(btn.checked, 'unchecked when empty');
+    assertFalse(btn.indeterminate, 'not indeterminate when empty');
+  });
+
+  test('hides toggle-all row when todo list is empty (no row passed)', function () {
+    var btn = createMockToggleAll();
     app.updateToggleAllButton([], btn);
     assertTrue(btn.classList.contains('hidden'), 'toggle-all hidden when no todos');
     assertFalse(btn.checked, 'unchecked when empty');
     assertFalse(btn.indeterminate, 'not indeterminate when empty');
+  });
+
+  test('shows toggle-all row when todos exist', function () {
+    var todos = [app.createTodo('A')];
+    var btn = createMockToggleAll();
+    var row = createMockToggleAllRow();
+    app.updateToggleAllButton(todos, btn, row);
+    assertFalse(btn.classList.contains('hidden'), 'toggle-all visible');
+    assertFalse(row.classList.contains('hidden'), 'toggle-all row visible when todos exist');
   });
 
   test('checks toggle-all when all todos are completed', function () {
@@ -1389,8 +1436,10 @@
     todos[0].completed = true;
     todos[1].completed = true;
     var btn = createMockToggleAll();
-    app.updateToggleAllButton(todos, btn);
+    var row = createMockToggleAllRow();
+    app.updateToggleAllButton(todos, btn, row);
     assertFalse(btn.classList.contains('hidden'), 'toggle-all visible');
+    assertFalse(row.classList.contains('hidden'), 'toggle-all row visible');
     assertTrue(btn.checked, 'checked when all completed');
     assertFalse(btn.indeterminate, 'not indeterminate when all completed');
   });
@@ -1398,8 +1447,10 @@
   test('unchecks toggle-all when no todos are completed', function () {
     var todos = [app.createTodo('A'), app.createTodo('B')];
     var btn = createMockToggleAll();
-    app.updateToggleAllButton(todos, btn);
+    var row = createMockToggleAllRow();
+    app.updateToggleAllButton(todos, btn, row);
     assertFalse(btn.classList.contains('hidden'), 'toggle-all visible');
+    assertFalse(row.classList.contains('hidden'), 'toggle-all row visible');
     assertFalse(btn.checked, 'unchecked when none completed');
     assertFalse(btn.indeterminate, 'not indeterminate when none completed');
   });
@@ -1408,8 +1459,10 @@
     var todos = [app.createTodo('A'), app.createTodo('B'), app.createTodo('C')];
     todos[0].completed = true;
     var btn = createMockToggleAll();
-    app.updateToggleAllButton(todos, btn);
+    var row = createMockToggleAllRow();
+    app.updateToggleAllButton(todos, btn, row);
     assertFalse(btn.classList.contains('hidden'), 'toggle-all visible');
+    assertFalse(row.classList.contains('hidden'), 'toggle-all row visible');
     assertFalse(btn.checked, 'unchecked when partial');
     assertTrue(btn.indeterminate, 'indeterminate when partial');
   });

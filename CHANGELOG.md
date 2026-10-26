@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 1 new test for `createTodo` verifying that leading/trailing whitespace is trimmed from the text parameter
 
 ### Changed
-- Updated test count references in README.md, README.zh-CN.md, and CONTRIBUTING.md from 126 to 127 passing
+- Updated test count references in README.md, README.zh-CN.md, and CONTRIBUTING.md from 127 to 129 passing
 
 ### Fixed
 - Test runner output noise: the mock `document.getElementById` returned `null` for all IDs, so when `app.js` loaded and `init()` ran (readyState was 'complete'), it logged a misleading "Todo App: Required DOM elements not found" error at the top of every test run — refactored the mock element factory into a shared `createMockElement()` function and made `getElementById` return mock elements for the 8 IDs that `init()` looks up (`todo-form`, `todo-input`, `add-btn`, `todo-list`, `empty-state`, `filter-bar`, `clear-completed`, `toggle-all`), eliminating the false error and making test output clean
