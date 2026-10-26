@@ -114,7 +114,7 @@ This runs **129 tests** covering:
 - `updateAddButton` — add button enable/disable state (4 tests)
 - `updateClearCompletedButton` — clear-completed button visibility (6 tests)
 - `updateFilterBar` — filter bar visibility based on todo count (4 tests)
-- `updateToggleAllButton` — toggle-all checkbox state (checked/indeterminate/hidden) (4 tests)
+- `updateToggleAllButton` — toggle-all checkbox state (checked/indeterminate/hidden) (6 tests)
 - `adjustFilterIfNeeded` — auto-switches to 'all' filter when current filter is empty (7 tests)
 - `render (empty state)` — empty state messages (4 tests)
 - `syncFilterButtons` — active class syncing on filter buttons (3 tests)
