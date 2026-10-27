@@ -128,7 +128,7 @@ todo-app/
 ├── style.css               # 全部样式及响应式布局
 ├── app.js                  # 核心逻辑（纯函数 + DOM + 持久化）
 ├── tests/
-│   └── app.test.js         # 零依赖单元测试套件（130 个测试）
+│   └── app.test.js         # 零依赖单元测试套件（131 个测试）
 ├── discussion/
 │   ├── product-requirements.md
 │   ├── architecture.md
