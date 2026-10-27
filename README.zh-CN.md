@@ -3,7 +3,7 @@
 > 一款轻量、零依赖的待办事项网页应用，基于 localStorage 持久化保存 — 添加、完成和删除任务，拥有干净且响应式的界面。
 
 [![License: MIT](https://img.shields.io/github/license/Hanley-Liu/todo-app?color=blue&style=flat)](LICENSE)
-[![Tests: 130 passing](https://img.shields.io/badge/Tests-130%20passing-brightgreen?style=flat)](tests/app.test.js)
+[![Tests: 131 passing](https://img.shields.io/badge/Tests-131%20passing-brightgreen?style=flat)](tests/app.test.js)
 [![CI](https://img.shields.io/github/actions/workflow/Hanley-Liu/todo-app/ci.yml?branch=main&label=CI&style=flat)](.github/workflows/ci.yml)
 [![GitHub Stars](https://img.shields.io/github/stars/Hanley-Liu/todo-app?style=flat&color=gold)](https://github.com/Hanley-Liu/todo-app/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/Hanley-Liu/todo-app?style=flat&color=lightgrey)](https://github.com/Hanley-Liu/todo-app/network)
@@ -89,7 +89,7 @@ npx serve .
 node tests/app.test.js
 ```
 
-共计 **130 个测试**，覆盖范围包括：
+共计 **131 个测试**，覆盖范围包括：
 
 - `hasValidInput` — 输入校验（6 测试）
 - `createTodo` — 待办创建与 ID 生成（5 测试）

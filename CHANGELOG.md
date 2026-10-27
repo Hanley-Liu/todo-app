@@ -16,8 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Updated test count references in README.md, README.zh-CN.md, and CONTRIBUTING.md from 129 to 130 passing; updated `createTodo` suite count from 4 to 5 tests in both READMEs
+- Updated test count references from 130 to 131 passing across README.md, README.zh-CN.md, and CONTRIBUTING.md; added `updateClearCompletedButton` singular-count (1) test case
 
 ### Added
+- Test case for `updateClearCompletedButton` covering the singular completed-count scenario (exactly 1 completed todo) to close a coverage gap in the count-display feature
 - `updateToggleAllButton` function: manages the toggle-all checkbox state — checked when all todos are completed, indeterminate when some are completed, unchecked when none are, and hidden when the list is empty
 - Toggle-all checkbox in the DOM (`#toggle-all`) wired to `toggleAll` via click handler, with full CSS styling including custom checkbox, checked/indeterminate visual states, and `prefers-reduced-motion` support
 - 6 new tests for `toggleAll` covering mark-all-complete, mark-all-incomplete, partial→complete, partial→incomplete, immutability, and empty array

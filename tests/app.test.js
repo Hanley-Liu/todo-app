@@ -1363,6 +1363,14 @@
     assertTrue(btn.classList.contains('hidden'), 'button hidden when no todos at all');
   });
 
+  test('includes completed count in button text when exactly one todo is completed', function () {
+    var todos = [app.createTodo('Task 1'), app.createTodo('Task 2'), app.createTodo('Task 3')];
+    todos[1].completed = true;
+    var btn = createMockButtonWithClass();
+    app.updateClearCompletedButton(todos, btn);
+    assertEqual(btn.textContent, 'Clear completed (1)', 'button text shows count of 1 when exactly one todo is completed');
+  });
+
   test('includes completed count in button text when some todos are completed', function () {
     var todos = [app.createTodo('Task 1'), app.createTodo('Task 2'), app.createTodo('Task 3')];
     todos[1].completed = true;
