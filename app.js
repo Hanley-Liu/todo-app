@@ -27,13 +27,15 @@
 
   /**
    * Creates a new Todo object from the given text.
+   * Non-string input is coerced to an empty string to guarantee
+   * the returned object always conforms to the Todo shape.
    * @param {string} text — Todo description
    * @returns {Todo}
    */
   function createTodo(text) {
     return {
       id: generateId(),
-      text: typeof text === 'string' ? text.trim() : text,
+      text: typeof text === 'string' ? text.trim() : '',
       completed: false,
     };
   }

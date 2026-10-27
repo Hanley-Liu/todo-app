@@ -496,6 +496,18 @@
     assertTrue(a.id !== b.id, 'ids should differ');
   });
 
+  test('coerces non-string input to empty string for text', function () {
+    var todo = app.createTodo(null);
+    assertEqual(todo.text, '', 'null becomes empty string');
+    assertTrue(typeof todo.text === 'string', 'text is always a string');
+
+    todo = app.createTodo(undefined);
+    assertEqual(todo.text, '', 'undefined becomes empty string');
+
+    todo = app.createTodo(123);
+    assertEqual(todo.text, '', 'number becomes empty string');
+  });
+
   // --- addTodo ---
   suite('addTodo');
 

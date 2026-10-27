@@ -8,10 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- Correctness bug: `createTodo` did not coerce non-string input to a string — passing `null`, `undefined`, or a number would set the `text` field to that raw value, violating the documented Todo shape (`text: string`) and potentially creating invalid state objects that could break downstream consumers; `createTodo` now coerces non-string input to an empty string, and a new test verifies this behavior
 - CHANGELOG.md was missing the `## [Unreleased]` section at the top — the first entry started directly with bullet points under `### Fixed` without a version header, violating the Keep a Changelog convention; added the standard `## [Unreleased]` section to properly structure future changes
 - Correctness bug: `createTodo` did not trim whitespace from the `text` parameter, unlike `addTodo` (which trims before calling `createTodo`) and `editTodo` (which trims independently) — calling `createTodo('  Buy milk  ')` directly would store the untrimmed text, creating an inconsistency where todos created via different code paths could have different whitespace handling; `createTodo` now trims string input (with a `typeof` guard for safety), and a new test verifies the trimming behavior
 - Docs: README.md and README.zh-CN.md listed `createTodo` suite as having 3 tests; corrected to 4 tests (verified via `count_tests.js`) for consistency with the actual test suite
 - Docs: README.md and README.zh-CN.md listed `updateToggleAllButton` suite as having 4 tests; corrected to 6 tests (verified via `count_tests.js` and manual count of `test()` calls in the suite) for consistency with the actual test suite
+
+### Changed
+- Updated test count references in README.md, README.zh-CN.md, and CONTRIBUTING.md from 129 to 130 passing; updated `createTodo` suite count from 4 to 5 tests in both READMEs
 
 ### Added
 - `updateToggleAllButton` function: manages the toggle-all checkbox state — checked when all todos are completed, indeterminate when some are completed, unchecked when none are, and hidden when the list is empty
