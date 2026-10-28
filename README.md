@@ -112,7 +112,7 @@ This runs **131 tests** covering:
 - `createTodoElement` — DOM element creation (8 tests)
 - `render` — list rendering & filter visibility (4 tests)
 - `updateAddButton` — add button enable/disable state (4 tests)
-- `updateClearCompletedButton` — clear-completed button visibility (6 tests)
+- `updateClearCompletedButton` — clear-completed button visibility (7 tests)
 - `updateFilterBar` — filter bar visibility based on todo count (4 tests)
 - `updateToggleAllButton` — toggle-all checkbox state (checked/indeterminate/hidden) (6 tests)
 - `adjustFilterIfNeeded` — auto-switches to 'all' filter when current filter is empty (7 tests)

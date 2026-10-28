@@ -109,7 +109,7 @@ node tests/app.test.js
 - `createTodoElement` — DOM 元素创建（8 测试）
 - `render` — 列表渲染与过滤可见性（4 测试）
 - `updateAddButton` — 添加按钮启用/禁用状态（4 测试）
-- `updateClearCompletedButton` — 清除已完成按钮可见性（6 测试）
+- `updateClearCompletedButton` — 清除已完成按钮可见性（7 测试）
 - `updateFilterBar` — 筛选栏可见性（4 测试）
 - `updateToggleAllButton` — 全选复选框状态（已选/部分选中/隐藏）（6 测试）
 - `adjustFilterIfNeeded` — 当前筛选为空时自动切换到「全部」（7 测试）

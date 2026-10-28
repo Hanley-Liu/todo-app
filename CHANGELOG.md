@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- Docs: README.md and README.zh-CN.md listed `updateClearCompletedButton` suite as having 6 tests; corrected to 7 tests (verified via `count_tests.js`) for consistency with the actual test suite
 - Correctness bug: `createTodo` did not coerce non-string input to a string — passing `null`, `undefined`, or a number would set the `text` field to that raw value, violating the documented Todo shape (`text: string`) and potentially creating invalid state objects that could break downstream consumers; `createTodo` now coerces non-string input to an empty string, and a new test verifies this behavior
 - CHANGELOG.md was missing the `## [Unreleased]` section at the top — the first entry started directly with bullet points under `### Fixed` without a version header, violating the Keep a Changelog convention; added the standard `## [Unreleased]` section to properly structure future changes
 - Correctness bug: `createTodo` did not trim whitespace from the `text` parameter, unlike `addTodo` (which trims before calling `createTodo`) and `editTodo` (which trims independently) — calling `createTodo('  Buy milk  ')` directly would store the untrimmed text, creating an inconsistency where todos created via different code paths could have different whitespace handling; `createTodo` now trims string input (with a `typeof` guard for safety), and a new test verifies the trimming behavior
