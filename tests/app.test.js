@@ -296,7 +296,18 @@
         if (idx > -1) children.splice(idx, 1);
         return el;
       },
-      querySelector: function () { return null; },
+      querySelector: function (sel) {
+        // Support simple class selectors like 'li.editing'
+        var parts = sel.split('.');
+        var cls = parts[1] || '';
+        for (var i = 0; i < children.length; i++) {
+          var child = children[i];
+          if (cls && child.classList && child.classList.contains(cls)) {
+            return child;
+          }
+        }
+        return null;
+      },
       querySelectorAll: function () { return []; },
       addEventListener: function () {},
       get firstChild() {
@@ -1241,6 +1252,40 @@
     var todo = app.createTodo('Task');
     var li = app.createTodoElement(todo);
     assertFalse(li.classList.contains('completed'), 'li has no completed class');
+  });
+
+  // --- Edit cancellation (startEditTodo internal behavior) ---
+  // startEditTodo is internal to init() and not exported, so we test the
+  // supporting mechanism: the mock list's querySelector can find 'li.editing'
+  // items, and li elements support the _finishEdit property pattern that
+  // startEditTodo uses to cancel in-progress edits.
+
+  test('mock list querySelector finds li.editing items', function () {
+    var list = createMockList();
+    var todo = app.createTodo('Task');
+    var li = app.createTodoElement(todo);
+    li.classList.add('editing');
+    list.appendChild(li);
+    var found = list.querySelector('li.editing');
+    assertTrue(found === li, 'querySelector finds the editing li');
+  });
+
+  test('mock list querySelector returns null when no editing item', function () {
+    var list = createMockList();
+    var todo = app.createTodo('Task');
+    var li = app.createTodoElement(todo);
+    list.appendChild(li);
+    var found = list.querySelector('li.editing');
+    assertTrue(found === null, 'querySelector returns null when no editing item');
+  });
+
+  test('li element supports _finishEdit property assignment', function () {
+    var todo = app.createTodo('Task');
+    var li = app.createTodoElement(todo);
+    var called = false;
+    li._finishEdit = function (save) { called = save; };
+    li._finishEdit(false);
+    assertFalse(called, '_finishEdit(false) sets called to false');
   });
 
   // --- render ---

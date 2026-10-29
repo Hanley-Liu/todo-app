@@ -508,8 +508,18 @@
 
     // --- Inline editing ---
     function startEditTodo(li, id) {
-      // Prevent double-edit
+      // Prevent double-edit on the same item
       if (li.classList.contains('editing')) return;
+
+      // Cancel any in-progress edit on a *different* item so that only
+      // one todo is in edit mode at a time. Without this, clicking "Edit"
+      // on another todo while one is already being edited leaves the
+      // first edit input orphaned (still focused, unsaved) and creates
+      // a confusing dual-edit state.
+      var existingEditing = list.querySelector('li.editing');
+      if (existingEditing && existingEditing !== li && existingEditing._finishEdit) {
+        existingEditing._finishEdit(false);
+      }
 
       li.classList.add('editing');
 
@@ -569,6 +579,11 @@
         // Return focus to the main input for continued use
         input.focus();
       };
+
+      // Expose finishEdit on the li element so that startEditTodo can
+      // cancel an in-progress edit on this item when a different item
+      // begins editing.
+      li._finishEdit = finishEdit;
 
       editInput.addEventListener('keydown', function (e) {
         if (e.key === 'Enter') {

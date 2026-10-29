@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Correctness bug: `createTodo` did not trim whitespace from the `text` parameter, unlike `addTodo` (which trims before calling `createTodo`) and `editTodo` (which trims independently) — calling `createTodo('  Buy milk  ')` directly would store the untrimmed text, creating an inconsistency where todos created via different code paths could have different whitespace handling; `createTodo` now trims string input (with a `typeof` guard for safety), and a new test verifies the trimming behavior
 - Docs: README.md and README.zh-CN.md listed `createTodo` suite as having 3 tests; corrected to 4 tests (verified via `count_tests.js`) for consistency with the actual test suite
 - Docs: README.md and README.zh-CN.md listed `updateToggleAllButton` suite as having 4 tests; corrected to 6 tests (verified via `count_tests.js` and manual count of `test()` calls in the suite) for consistency with the actual test suite
+- Docs: README.md, README.zh-CN.md, and CONTRIBUTING.md listed the total test count as 131 and `createTodoElement` suite as having 8 tests; corrected to 134 total tests and 11 `createTodoElement` tests (verified via `count_tests.js`) for consistency with the actual test suite
 
 ### Changed
 - Updated test count references in README.md, README.zh-CN.md, and CONTRIBUTING.md from 129 to 130 passing; updated `createTodo` suite count from 4 to 5 tests in both READMEs
